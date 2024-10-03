@@ -8,21 +8,57 @@ const generateCirclePoints = (
 	radius: number,
 	numPoints: number,
 ): Points => {
-	const points: Points = [];
-	for (let i = 0; i < numPoints; i++) {
+	return Array.from({ length: numPoints }, (_, i) => {
 		const angle = (i / numPoints) * 2 * Math.PI;
-		const x = centerX + radius * Math.cos(angle);
-		const y = centerY + radius * Math.sin(angle);
-		points.push([x, y]);
-	}
-	return points;
+		return [
+			centerX + radius * Math.cos(angle),
+			centerY + radius * Math.sin(angle),
+		];
+	});
+};
+
+const generatePolygonPoints = (
+	centerX: number,
+	centerY: number,
+	radius: number,
+	numSides: number,
+): Points => {
+	return Array.from({ length: numSides }, (_, i) => {
+		const angle = (i / numSides) * 2 * Math.PI;
+		return [
+			centerX + radius * Math.cos(angle),
+			centerY + radius * Math.sin(angle),
+		];
+	});
 };
 
 const generateInitialPoints = (): Points => {
-	const circle1 = generateCirclePoints(200, 200, 150, 20);
-	const circle2 = generateCirclePoints(200, 200, 100, 15);
-	return [...circle1, ...circle2];
-};
+	const leftCircle = generateCirclePoints(150, 250, 120, 40);
+	const rightCircle = generateCirclePoints(450, 250, 100, 30);
+	const topPolygon = generatePolygonPoints(300, 100, 80, 4);
+	const bottomPolygon = generatePolygonPoints(300, 400, 70, 6);
+
+	// Additional points for more complex triangulation
+	const additionalPoints: Points = [
+		[50, 50],
+		[550, 50],
+		[50, 450],
+		[550, 450], // corners
+		[300, 250], // center
+		[200, 150],
+		[400, 150],
+		[200, 350],
+		[400, 350], // midpoints
+	];
+
+	return [
+		...leftCircle,
+		...rightCircle,
+		...topPolygon,
+		...bottomPolygon,
+		...additionalPoints,
+	];
+}
 
 const App = () => {
 	const [points, setPoints] = useState<Points>(generateInitialPoints);
