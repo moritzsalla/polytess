@@ -10,6 +10,7 @@
     "@types/node": "^16.18.112",
     "@types/react": "^18.3.11",
     "@types/react-dom": "^18.3.0",
+    "delaunator": "^5.0.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-scripts": "5.0.1",
@@ -39,5 +40,10 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@types/delaunator": "^5.0.3",
+    "ajv": "^8.17.1",
+    "prettier": "^3.3.3"
   }
 }

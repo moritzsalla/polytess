@@ -1,26 +1,29 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
+import DelaunayTriangulation from "./DelaunayTriangulation";
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+	return (
+		<div className='App'>
+			<DelaunayTriangulation
+				points={[
+					[50, 50],
+					[150, 50],
+					[100, 150],
+					[200, 200],
+					[300, 100],
+					[350, 200],
+					[250, 250],
+					[200, 350],
+					[100, 300],
+					[50, 350],
+					[50, 250],
+					[150, 200],
+				]}
+				width={400}
+				height={400}
+			/>
+		</div>
+	);
 }
 
 export default App;
