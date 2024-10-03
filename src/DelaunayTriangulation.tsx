@@ -1,15 +1,19 @@
 import React, { useEffect, useRef } from "react";
 import Delaunator from "delaunator";
 
+export type Points = Array<[number, number]>;
+
+type DelaunayTriangulationProps = {
+	points: Points;
+	onClick?: React.SVGProps<SVGSVGElement>["onClick"];
+	onDrag?: React.SVGProps<SVGSVGElement>["onPointerMove"];
+};
+
 const DelaunayTriangulation = ({
 	points,
-	width,
-	height,
-}: {
-	points: Array<[number, number]>;
-	width: number;
-	height: number;
-}) => {
+	onClick,
+	onDrag,
+}: DelaunayTriangulationProps) => {
 	const svgRef = useRef<React.ElementRef<"svg">>(null);
 
 	useEffect(() => {
@@ -38,16 +42,26 @@ const DelaunayTriangulation = ({
 				`${points[p1][0]},${points[p1][1]} ${points[p2][0]},${points[p2][1]} ${points[p3][0]},${points[p3][1]}`,
 			);
 			polygon.setAttribute("fill", "none");
-			polygon.setAttribute("stroke", "black");
+			polygon.setAttribute("stroke", "currentcolor");
 
 			svgRef.current?.appendChild(polygon);
 		}
 	}, [points]);
 
 	return (
-		<svg ref={svgRef} width={width} height={height}>
-			{/* SVG content will be rendered here outside of React. */}
-		</svg>
+		// SVG content will be rendered here outside of React.
+		<svg
+			ref={svgRef}
+			width='100vw'
+			height='100vh'
+			onClick={onClick}
+			onPointerMove={(e) => {
+				// Only if mouse button is pressed
+				if (e.buttons === 1 && onDrag) {
+					onDrag(e);
+				}
+			}}
+		/>
 	);
 };
 
