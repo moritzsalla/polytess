@@ -1,6 +1,6 @@
 import { useState } from "react";
 import "./App.css";
-import DelaunayTriangulation, { type Points } from "./DelaunayTriangulation";
+import SvgCanvas, { type Points } from "./SvgCanvas";
 
 const generateCirclePoints = (
 	centerX: number,
@@ -58,24 +58,21 @@ const generateInitialPoints = (): Points => {
 		...bottomPolygon,
 		...additionalPoints,
 	];
-}
+};
+
+const VIEWS = [{ name: "plain" }, { name: "color" }] as const;
+
+export type View = (typeof VIEWS)[number]["name"];
 
 const App = () => {
+	const [view, setView] = useState<View>("plain");
 	const [points, setPoints] = useState<Points>(generateInitialPoints);
 
 	return (
 		<div className='App'>
-			<DelaunayTriangulation
+			<SvgCanvas
+				view={view}
 				points={points}
-				onDrag={
-					// Capture new point on click and add it to the list of coordinates
-					(e) => {
-						const rect = e.currentTarget.getBoundingClientRect();
-						const x = e.clientX - rect.left;
-						const y = e.clientY - rect.top;
-						setPoints((prev) => [...prev, [x, y]]);
-					}
-				}
 				onClick={
 					// Capture new point on click and add it to the list of coordinates
 					(e) => {
@@ -85,7 +82,29 @@ const App = () => {
 						setPoints((prev) => [...prev, [x, y]]);
 					}
 				}
+				onDrag={
+					// Capture new point on click and add it to the list of coordinates
+					(e) => {
+						const rect = e.currentTarget.getBoundingClientRect();
+						const x = e.clientX - rect.left;
+						const y = e.clientY - rect.top;
+						setPoints((prev) => [...prev, [x, y]]);
+					}
+				}
 			/>
+			<menu
+				style={{ position: "fixed", bottom: 0, right: 0, padding: "1rem" }}>
+				<span>Current view: {view}</span>
+
+				{VIEWS.map(({ name }, index) => (
+					<button
+						key={index + name}
+						type='button'
+						onClick={() => setView(name)}>
+						{name} View
+					</button>
+				))}
+			</menu>
 		</div>
 	);
 };
