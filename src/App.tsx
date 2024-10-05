@@ -1,6 +1,8 @@
 import { useState } from "react";
 import "./App.css";
-import SvgCanvas, { type Points } from "./SvgCanvas";
+import SvgCanvas, { type Points } from "./SvgCanvas/SvgCanvas";
+import { VIEWS, type View } from "./config";
+import ErrorBoundary from "./ErrorBoundary";
 
 const generateCirclePoints = (
 	centerX: number,
@@ -60,50 +62,56 @@ const generateInitialPoints = (): Points => {
 	];
 };
 
-const VIEWS = [{ name: "plain" }, { name: "color" }] as const;
-
-export type View = (typeof VIEWS)[number]["name"];
-
+// TODO: save drawing to local storage to persist between reloads
+// TODO: gradient view
+// TODO: image trace view
+// TODO: export SVG
 const App = () => {
-	const [view, setView] = useState<View>("plain");
+	const [view, setView] = useState<View>("lines");
 	const [points, setPoints] = useState<Points>(generateInitialPoints);
 
 	return (
 		<div className='App'>
-			<SvgCanvas
-				view={view}
-				points={points}
-				onClick={
-					// Capture new point on click and add it to the list of coordinates
-					(e) => {
-						const rect = e.currentTarget.getBoundingClientRect();
-						const x = e.clientX - rect.left;
-						const y = e.clientY - rect.top;
-						setPoints((prev) => [...prev, [x, y]]);
+			<ErrorBoundary fallback={<>Try again.</>}>
+				<SvgCanvas
+					// Force re-render when key changes. This won't clear the canvas.
+					key={view}
+					view={view}
+					points={points}
+					onClick={
+						// Capture new point on click and add it to the list of coordinates
+						(e) => {
+							const rect = e.currentTarget.getBoundingClientRect();
+							const x = e.clientX - rect.left;
+							const y = e.clientY - rect.top;
+							setPoints((prev) => [...prev, [x, y]]);
+						}
 					}
-				}
-				onDrag={
-					// Capture new point on click and add it to the list of coordinates
-					(e) => {
-						const rect = e.currentTarget.getBoundingClientRect();
-						const x = e.clientX - rect.left;
-						const y = e.clientY - rect.top;
-						setPoints((prev) => [...prev, [x, y]]);
+					onDrag={
+						// Capture new point on click and add it to the list of coordinates
+						(e) => {
+							const rect = e.currentTarget.getBoundingClientRect();
+							const x = e.clientX - rect.left;
+							const y = e.clientY - rect.top;
+							setPoints((prev) => [...prev, [x, y]]);
+						}
 					}
-				}
-			/>
+				/>
+			</ErrorBoundary>
 			<menu
 				style={{ position: "fixed", bottom: 0, right: 0, padding: "1rem" }}>
 				<span>Current view: {view}</span>
-
-				{VIEWS.map(({ name }, index) => (
-					<button
-						key={index + name}
-						type='button'
-						onClick={() => setView(name)}>
-						{name} View
-					</button>
-				))}
+				<div>
+					View:{" "}
+					{VIEWS.map(({ name }, index) => (
+						<button
+							key={index + name}
+							type='button'
+							onClick={() => setView(name)}>
+							{name}
+						</button>
+					))}
+				</div>
 			</menu>
 		</div>
 	);
