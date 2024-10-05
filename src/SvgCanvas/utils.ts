@@ -71,7 +71,7 @@ const renderGradientView: Renderer = (points, delaunay, svg) => {
 			"fill",
 			`rgb(${points[p1][0]},${points[p1][1]},255)`,
 		);
-		polygon.setAttribute("stroke", "white");
+		// polygon.setAttribute("stroke", "black");
 
 		svg.appendChild(polygon);
 	}

@@ -1,9 +1,14 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import "./App.css";
 import SvgCanvas, { type Points } from "./SvgCanvas/SvgCanvas";
 import { VIEWS, type View } from "./config";
 import ErrorBoundary from "./ErrorBoundary/ErrorBoundary";
-import { generateCirclePoints, generatePolygonPoints } from "./utils";
+import {
+	downloadSvgFile,
+	generateCirclePoints,
+	generatePolygonPoints,
+} from "./utils";
+import Button from "./Button/Button";
 
 const generateInitialPoints = (): Points => {
 	const leftCircle = generateCirclePoints(150, 250, 120, 40);
@@ -38,8 +43,19 @@ const generateInitialPoints = (): Points => {
 // TODO: image trace view
 // TODO: export SVG
 const App = () => {
+	const svgRef = useRef<SVGSVGElement>(null);
 	const [view, setView] = useState<View>("lines");
 	const [points, setPoints] = useState<Points>(() => generateInitialPoints());
+
+	const handleExportSVG = () => {
+		if (svgRef.current) {
+			downloadSvgFile(svgRef.current, "export");
+		} else {
+			console.error(
+				"Attempted download: SVG element not found. Did you forget to assign the ref?",
+			);
+		}
+	};
 
 	return (
 		<div className='App'>
@@ -49,6 +65,7 @@ const App = () => {
 				fallback={<>Try again.</>}
 			>
 				<SvgCanvas
+					ref={svgRef}
 					view={view}
 					points={points}
 					onClick={
@@ -78,14 +95,13 @@ const App = () => {
 				<div>
 					View:{" "}
 					{VIEWS.map(({ name }, index) => (
-						<button
-							key={index + name}
-							type='button'
-							onClick={() => setView(name)}
-						>
+						<Button key={index + name} onClick={() => setView(name)}>
 							{name}
-						</button>
+						</Button>
 					))}
+				</div>
+				<div>
+					<Button onClick={handleExportSVG}>Export SVG</Button>
 				</div>
 			</menu>
 		</div>
