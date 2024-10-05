@@ -43,10 +43,12 @@ const App = () => {
 
 	return (
 		<div className='App'>
-			<ErrorBoundary fallback={<>Try again.</>}>
+			<ErrorBoundary
+				// Force re-render of canvas when key changes. This won't clear the canvas.
+				key={view}
+				fallback={<>Try again.</>}
+			>
 				<SvgCanvas
-					// Force re-render when key changes. This won't clear the canvas.
-					key={view}
 					view={view}
 					points={points}
 					onClick={
@@ -70,7 +72,8 @@ const App = () => {
 				/>
 			</ErrorBoundary>
 			<menu
-				style={{ position: "fixed", bottom: 0, right: 0, padding: "1rem" }}>
+				style={{ position: "fixed", bottom: 0, right: 0, padding: "1rem" }}
+			>
 				<span>Current view: {view}</span>
 				<div>
 					View:{" "}
@@ -78,7 +81,8 @@ const App = () => {
 						<button
 							key={index + name}
 							type='button'
-							onClick={() => setView(name)}>
+							onClick={() => setView(name)}
+						>
 							{name}
 						</button>
 					))}
