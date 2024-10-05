@@ -11,8 +11,7 @@ import { downloadSvgFile, generateInitialPoints } from "./utils";
 import { usePersistentState } from "./usePersistentStorage";
 import Menu from "./Menu/Menu";
 
-// TODO: save drawing to local storage to persist between reloads
-// TODO: gradient view
+// TODO: finalize gradient view (gradient fill)
 // TODO: image trace view
 
 const ERROR_FALLBACK_COMPONENT = <div>Something went wrong</div>;
