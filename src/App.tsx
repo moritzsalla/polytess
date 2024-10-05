@@ -1,14 +1,15 @@
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import "./App.css";
 import SvgCanvas, {
 	type OnClickFn,
 	type OnDragFn,
 	type Points,
 } from "./SvgCanvas/SvgCanvas";
-import { VIEWS, type View } from "./config";
+import { STORAGE_KEYS, type View } from "./config";
 import ErrorBoundary from "./ErrorBoundary/ErrorBoundary";
 import { downloadSvgFile, generateInitialPoints } from "./utils";
-import Button from "./Button/Button";
+import { usePersistentState } from "./usePersistentStorage";
+import Menu from "./Menu/Menu";
 
 // TODO: save drawing to local storage to persist between reloads
 // TODO: gradient view
@@ -18,8 +19,12 @@ const ERROR_FALLBACK_COMPONENT = <div>Something went wrong</div>;
 
 const App = () => {
 	const svgRef = useRef<SVGSVGElement>(null);
-	const [view, setView] = useState<View>("lines");
-	const [points, setPoints] = useState<Points>([]);
+
+	const [view, setView] = usePersistentState<View>(STORAGE_KEYS.VIEW, "lines");
+	const [points, setPoints] = usePersistentState<Points>(
+		STORAGE_KEYS.POINTS,
+		[],
+	);
 
 	// Capture new point on click and add it to the list of coordinates
 	const handleCanvasOnClickEvent: OnClickFn = (e) => {
@@ -48,16 +53,6 @@ const App = () => {
 		}
 	};
 
-	// Remove points from the canvas
-	const handleClearCanvas = () => {
-		setPoints([]);
-	};
-
-	// Generate random points for the canvas for demo purposes
-	const handleGenerateRandomPoints = () => {
-		setPoints(generateInitialPoints());
-	};
-
 	return (
 		<div className='App'>
 			<ErrorBoundary
@@ -73,30 +68,13 @@ const App = () => {
 					onDrag={handleCanvasOnDragEvent}
 				/>
 			</ErrorBoundary>
-			<menu
-				style={{ position: "fixed", bottom: 0, right: 0, padding: "1rem" }}
-			>
-				<span>Current view: {view}</span>
-				<div>
-					View:{" "}
-					{VIEWS.map(({ name }, index) => (
-						<Button key={index + name} onClick={() => setView(name)}>
-							{name}
-						</Button>
-					))}
-				</div>
-				<div>
-					<Button onClick={handleExportSVG}>Export SVG</Button>
-				</div>
-				<div>
-					<Button onClick={handleClearCanvas}>Clear SVG</Button>
-				</div>
-				<div>
-					<Button onClick={handleGenerateRandomPoints}>
-						Generate random points
-					</Button>
-				</div>
-			</menu>
+			<Menu
+				view={view}
+				setView={setView}
+				onExport={handleExportSVG}
+				onClear={() => setPoints([])}
+				onGenerate={() => setPoints(generateInitialPoints())}
+			/>
 		</div>
 	);
 };
