@@ -2,29 +2,18 @@ import React, { forwardRef, useEffect, useRef } from "react";
 import Delaunator from "delaunator";
 import type { View } from "../config";
 import { generateView } from "./utils";
+import { mergeRefs } from "../utils";
 
 export type Points = Array<[number, number]>;
+export type OnClickFn = React.SVGProps<SVGSVGElement>["onClick"];
+export type OnDragFn = React.SVGProps<SVGSVGElement>["onPointerMove"];
 
 type SvgCanvasProps = {
 	points: Points;
 	view: View;
-	onClick?: React.SVGProps<SVGSVGElement>["onClick"];
-	onDrag?: React.SVGProps<SVGSVGElement>["onPointerMove"];
+	onClick?: OnClickFn;
+	onDrag?: OnDragFn;
 };
-
-const mergeRefs =
-	<T extends any>(
-		...refs: Array<React.Ref<T> | undefined>
-	): React.RefCallback<T> =>
-	(value) => {
-		refs.forEach((ref) => {
-			if (typeof ref === "function") {
-				ref(value);
-			} else if (ref) {
-				(ref as React.MutableRefObject<T | null>).current = value;
-			}
-		});
-	};
 
 const SvgCanvas = forwardRef<SVGSVGElement, SvgCanvasProps>(
 	({ view, points, onClick, onDrag }, forwardedRef) => {

@@ -1,52 +1,43 @@
 import { useRef, useState } from "react";
 import "./App.css";
-import SvgCanvas, { type Points } from "./SvgCanvas/SvgCanvas";
+import SvgCanvas, {
+	type OnClickFn,
+	type OnDragFn,
+	type Points,
+} from "./SvgCanvas/SvgCanvas";
 import { VIEWS, type View } from "./config";
 import ErrorBoundary from "./ErrorBoundary/ErrorBoundary";
-import {
-	downloadSvgFile,
-	generateCirclePoints,
-	generatePolygonPoints,
-} from "./utils";
+import { downloadSvgFile, generateInitialPoints } from "./utils";
 import Button from "./Button/Button";
-
-const generateInitialPoints = (): Points => {
-	const leftCircle = generateCirclePoints(150, 250, 120, 40);
-	const rightCircle = generateCirclePoints(450, 250, 100, 30);
-	const topPolygon = generatePolygonPoints(300, 100, 80, 4);
-	const bottomPolygon = generatePolygonPoints(300, 400, 70, 6);
-
-	// Additional points for more complex triangulation
-	const additionalPoints: Points = [
-		[50, 50],
-		[550, 50],
-		[50, 450],
-		[550, 450], // corners
-		[300, 250], // center
-		[200, 150],
-		[400, 150],
-		[200, 350],
-		[400, 350], // midpoints
-	];
-
-	return [
-		...leftCircle,
-		...rightCircle,
-		...topPolygon,
-		...bottomPolygon,
-		...additionalPoints,
-	];
-};
 
 // TODO: save drawing to local storage to persist between reloads
 // TODO: gradient view
 // TODO: image trace view
-// TODO: export SVG
+
+const ERROR_FALLBACK_COMPONENT = <div>Something went wrong</div>;
+
 const App = () => {
 	const svgRef = useRef<SVGSVGElement>(null);
 	const [view, setView] = useState<View>("lines");
-	const [points, setPoints] = useState<Points>(() => generateInitialPoints());
+	const [points, setPoints] = useState<Points>([]);
 
+	// Capture new point on click and add it to the list of coordinates
+	const handleCanvasOnClickEvent: OnClickFn = (e) => {
+		const rect = e.currentTarget.getBoundingClientRect();
+		const x = e.clientX - rect.left;
+		const y = e.clientY - rect.top;
+		setPoints((prev) => [...prev, [x, y]]);
+	};
+
+	// Capture new point on click and add it to the list of coordinates
+	const handleCanvasOnDragEvent: OnDragFn = (e) => {
+		const rect = e.currentTarget.getBoundingClientRect();
+		const x = e.clientX - rect.left;
+		const y = e.clientY - rect.top;
+		setPoints((prev) => [...prev, [x, y]]);
+	};
+
+	// Export the SVG to a file
 	const handleExportSVG = () => {
 		if (svgRef.current) {
 			downloadSvgFile(svgRef.current, "export");
@@ -57,35 +48,29 @@ const App = () => {
 		}
 	};
 
+	// Remove points from the canvas
+	const handleClearCanvas = () => {
+		setPoints([]);
+	};
+
+	// Generate random points for the canvas for demo purposes
+	const handleGenerateRandomPoints = () => {
+		setPoints(generateInitialPoints());
+	};
+
 	return (
 		<div className='App'>
 			<ErrorBoundary
 				// Force re-render of canvas when key changes. This won't clear the canvas.
 				key={view}
-				fallback={<>Try again.</>}
+				fallback={ERROR_FALLBACK_COMPONENT}
 			>
 				<SvgCanvas
 					ref={svgRef}
 					view={view}
 					points={points}
-					onClick={
-						// Capture new point on click and add it to the list of coordinates
-						(e) => {
-							const rect = e.currentTarget.getBoundingClientRect();
-							const x = e.clientX - rect.left;
-							const y = e.clientY - rect.top;
-							setPoints((prev) => [...prev, [x, y]]);
-						}
-					}
-					onDrag={
-						// Capture new point on click and add it to the list of coordinates
-						(e) => {
-							const rect = e.currentTarget.getBoundingClientRect();
-							const x = e.clientX - rect.left;
-							const y = e.clientY - rect.top;
-							setPoints((prev) => [...prev, [x, y]]);
-						}
-					}
+					onClick={handleCanvasOnClickEvent}
+					onDrag={handleCanvasOnDragEvent}
 				/>
 			</ErrorBoundary>
 			<menu
@@ -102,6 +87,14 @@ const App = () => {
 				</div>
 				<div>
 					<Button onClick={handleExportSVG}>Export SVG</Button>
+				</div>
+				<div>
+					<Button onClick={handleClearCanvas}>Clear SVG</Button>
+				</div>
+				<div>
+					<Button onClick={handleGenerateRandomPoints}>
+						Generate random points
+					</Button>
 				</div>
 			</menu>
 		</div>
