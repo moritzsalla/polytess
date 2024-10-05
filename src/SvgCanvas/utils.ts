@@ -5,14 +5,10 @@ import type { View } from "../config";
 type Renderer = (
 	points: Points,
 	delaunay: Delaunator<number[]>,
-	svg: React.ElementRef<"svg">,
+	svg: SVGElement,
 ) => void;
 
-const renderLinesView: Renderer = (
-	points: Points,
-	delaunay: Delaunator<number[]>,
-	svg: React.ElementRef<"svg">,
-) => {
+const renderLinesView: Renderer = (points, delaunay, svg) => {
 	// Draw triangles
 	for (let i = 0; i < delaunay.triangles.length; i += 3) {
 		const p1 = delaunay.triangles[i];
@@ -34,11 +30,7 @@ const renderLinesView: Renderer = (
 	}
 };
 
-const renderShapesView: Renderer = (
-	points: Points,
-	delaunay: Delaunator<number[]>,
-	svg: React.ElementRef<"svg">,
-) => {
+const renderShapesView: Renderer = (points, delaunay, svg) => {
 	// Draw triangles
 	for (let i = 0; i < delaunay.triangles.length; i += 3) {
 		const p1 = delaunay.triangles[i];
@@ -60,11 +52,7 @@ const renderShapesView: Renderer = (
 	}
 };
 
-const renderGradientView: Renderer = (
-	points: Points,
-	delaunay: Delaunator<number[]>,
-	svg: React.ElementRef<"svg">,
-) => {
+const renderGradientView: Renderer = (points, delaunay, svg) => {
 	// Draw triangles
 	for (let i = 0; i < delaunay.triangles.length; i += 3) {
 		const p1 = delaunay.triangles[i];
@@ -89,11 +77,7 @@ const renderGradientView: Renderer = (
 	}
 };
 
-const renderImageTraceView: Renderer = (
-	points: Points,
-	delaunay: Delaunator<number[]>,
-	svg: React.ElementRef<"svg">,
-) => {
+const renderImageTraceView: Renderer = (points, delaunay, svg) => {
 	throw new Error("Not implemented");
 };
 
@@ -108,7 +92,7 @@ const VIEW_RENDERERS: {
 
 export const generateView = (
 	view: View,
-	svgElem: React.ElementRef<"svg">,
+	svgElem: SVGGElement,
 	points: Points,
 	delaunay: Delaunator<number[]>,
 ) => {
