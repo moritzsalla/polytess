@@ -2,37 +2,8 @@ import { useState } from "react";
 import "./App.css";
 import SvgCanvas, { type Points } from "./SvgCanvas/SvgCanvas";
 import { VIEWS, type View } from "./config";
-import ErrorBoundary from "./ErrorBoundary";
-
-const generateCirclePoints = (
-	centerX: number,
-	centerY: number,
-	radius: number,
-	numPoints: number,
-): Points => {
-	return Array.from({ length: numPoints }, (_, i) => {
-		const angle = (i / numPoints) * 2 * Math.PI;
-		return [
-			centerX + radius * Math.cos(angle),
-			centerY + radius * Math.sin(angle),
-		];
-	});
-};
-
-const generatePolygonPoints = (
-	centerX: number,
-	centerY: number,
-	radius: number,
-	numSides: number,
-): Points => {
-	return Array.from({ length: numSides }, (_, i) => {
-		const angle = (i / numSides) * 2 * Math.PI;
-		return [
-			centerX + radius * Math.cos(angle),
-			centerY + radius * Math.sin(angle),
-		];
-	});
-};
+import ErrorBoundary from "./ErrorBoundary/ErrorBoundary";
+import { generateCirclePoints, generatePolygonPoints } from "./utils";
 
 const generateInitialPoints = (): Points => {
 	const leftCircle = generateCirclePoints(150, 250, 120, 40);
@@ -68,7 +39,7 @@ const generateInitialPoints = (): Points => {
 // TODO: export SVG
 const App = () => {
 	const [view, setView] = useState<View>("lines");
-	const [points, setPoints] = useState<Points>(generateInitialPoints);
+	const [points, setPoints] = useState<Points>(() => generateInitialPoints());
 
 	return (
 		<div className='App'>
