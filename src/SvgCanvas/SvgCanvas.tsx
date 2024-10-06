@@ -1,10 +1,10 @@
 import css from "./SvgCanvas.module.css";
 import React, { forwardRef, useEffect, useRef } from "react";
 import Delaunator from "delaunator";
-import { ERASE_MODE_RADIUS, type Mode, type View } from "../config";
+import type { Mode, View } from "../config";
 import { generateView } from "./utils";
 import { mergeRefs } from "../utils";
-import { useMove } from "@use-gesture/react";
+import SvgCanvasCustomCursor from "./SvgCanvasCustomCursor";
 
 export type Points = Array<[number, number]>;
 export type OnClickFn = React.SVGProps<SVGSVGElement>["onClick"];
@@ -48,43 +48,12 @@ const SvgCanvas = forwardRef<SVGSVGElement, SvgCanvasProps>(
 						}
 					}}
 				/>
-				<CustomCursor mode={mode} svgRef={svgRef} />
+				<SvgCanvasCustomCursor mode={mode} svgRef={svgRef} />
 			</>
 		);
 	},
 );
 
-const CustomCursor = ({
-	mode,
-	svgRef,
-}: {
-	mode: Mode;
-	svgRef: React.RefObject<SVGSVGElement>;
-}) => {
-	const cursorRef = useRef<React.ElementRef<"div">>(null);
 
-	useMove(
-		({ xy: [x, y] }) => {
-			if (!cursorRef.current) return;
-			cursorRef.current.style.left = `${x}px`;
-			cursorRef.current.style.top = `${y}px`;
-		},
-		{
-			enabled: mode === "erase",
-			target: svgRef,
-		},
-	);
-
-	return (
-		<div
-			ref={cursorRef}
-			className={css.customCursor}
-			style={{
-				width: ERASE_MODE_RADIUS * 2,
-				height: ERASE_MODE_RADIUS * 2,
-			}}
-		/>
-	);
-};
 
 export default SvgCanvas;
