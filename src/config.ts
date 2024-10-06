@@ -15,3 +15,5 @@ export const STORAGE_KEYS = {
 	POINTS: "points",
 	MODE: "mode",
 } as const;
+
+export const ERASE_MODE_RADIUS = 60;

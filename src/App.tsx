@@ -1,13 +1,14 @@
 import { useRef } from "react";
-import SvgCanvas, {
-	type OnClickFn,
-	type OnDragFn,
-	type Points,
-} from "./SvgCanvas/SvgCanvas";
-import { STORAGE_KEYS, type Mode, type View } from "./config";
+import SvgCanvas, { type Points } from "./SvgCanvas/SvgCanvas";
+import {
+	ERASE_MODE_RADIUS,
+	STORAGE_KEYS,
+	type Mode,
+	type View,
+} from "./config";
 import ErrorBoundary from "./ErrorBoundary/ErrorBoundary";
 import { downloadSvgFile, generateInitialPoints } from "./utils";
-import { usePersistentState } from "./usePersistentStorage";
+import { usePersistentState } from "./hooks/usePersistentStorage";
 import Menu from "./Menu/Menu";
 
 // TODO: image trace view
@@ -28,19 +29,30 @@ const App = () => {
 	);
 
 	// Capture new point on click and add it to the list of coordinates
-	const handleCanvasOnClickEvent: OnClickFn = (e) => {
+	const handleCanvasEvent = (
+		e: React.MouseEvent<SVGSVGElement, MouseEvent>,
+	) => {
 		const rect = e.currentTarget.getBoundingClientRect();
 		const x = e.clientX - rect.left;
 		const y = e.clientY - rect.top;
-		setPoints((prev) => [...prev, [x, y]]);
-	};
 
-	// Capture new point on click and add it to the list of coordinates
-	const handleCanvasOnDragEvent: OnDragFn = (e) => {
-		const rect = e.currentTarget.getBoundingClientRect();
-		const x = e.clientX - rect.left;
-		const y = e.clientY - rect.top;
-		setPoints((prev) => [...prev, [x, y]]);
+		switch (mode) {
+			case "draw":
+				setPoints((prev) => [...prev, [x, y]]);
+				break;
+			case "erase":
+				setPoints((prev) =>
+					prev.filter((point) => {
+						const distance = Math.sqrt(
+							Math.pow(point[0] - x, 2) + Math.pow(point[1] - y, 2),
+						);
+						return distance > ERASE_MODE_RADIUS;
+					}),
+				);
+				break;
+			default:
+				return;
+		}
 	};
 
 	// Export the SVG to a file
@@ -65,8 +77,9 @@ const App = () => {
 					ref={svgRef}
 					view={view}
 					points={points}
-					onClick={handleCanvasOnClickEvent}
-					onDrag={handleCanvasOnDragEvent}
+					mode={mode}
+					onClick={handleCanvasEvent}
+					onDrag={handleCanvasEvent}
 				/>
 			</ErrorBoundary>
 			<Menu
