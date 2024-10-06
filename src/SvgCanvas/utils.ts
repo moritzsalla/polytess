@@ -8,6 +8,8 @@ type Renderer = (
 	svg: SVGElement,
 ) => void;
 
+const SHAPE_RENDERING = "auto";
+
 const renderLinesView: Renderer = (points, delaunay, svg) => {
 	// Draw triangles
 	for (let i = 0; i < delaunay.triangles.length; i += 3) {
@@ -19,6 +21,10 @@ const renderLinesView: Renderer = (points, delaunay, svg) => {
 			"http://www.w3.org/2000/svg",
 			"polygon",
 		);
+
+		// Improve AA
+		polygon.setAttribute("shape-rendering", SHAPE_RENDERING);
+
 		polygon.setAttribute(
 			"points",
 			`${points[p1][0]},${points[p1][1]} ${points[p2][0]},${points[p2][1]} ${points[p3][0]},${points[p3][1]}`,
@@ -41,12 +47,30 @@ const renderShapesView: Renderer = (points, delaunay, svg) => {
 			"http://www.w3.org/2000/svg",
 			"polygon",
 		);
+
+		// Improve AA
+		polygon.setAttribute("shape-rendering", SHAPE_RENDERING);
+
 		polygon.setAttribute(
 			"points",
 			`${points[p1][0]},${points[p1][1]} ${points[p2][0]},${points[p2][1]} ${points[p3][0]},${points[p3][1]}`,
 		);
-		polygon.setAttribute("fill", "black");
-		polygon.setAttribute("stroke", "white");
+
+		const possibleColors = [
+			"#F2DC5D",
+			"#F2A359",
+			"#DB9065",
+			"#A4031F",
+			"#240B36",
+			"#8075FF",
+			"#F8F0FB",
+		];
+
+		const color =
+			possibleColors[Math.floor(Math.random() * possibleColors.length)];
+
+		polygon.setAttribute("fill", color);
+		polygon.setAttribute("stroke", possibleColors[2]);
 
 		svg.appendChild(polygon);
 	}
@@ -63,6 +87,10 @@ const renderGradientView: Renderer = (points, delaunay, svg) => {
 			"http://www.w3.org/2000/svg",
 			"polygon",
 		);
+
+		// Improve AA
+		polygon.setAttribute("shape-rendering", SHAPE_RENDERING);
+
 		polygon.setAttribute(
 			"points",
 			`${points[p1][0]},${points[p1][1]} ${points[p2][0]},${points[p2][1]} ${points[p3][0]},${points[p3][1]}`,
@@ -96,8 +124,10 @@ export const generateView = (
 	points: Points,
 	delaunay: Delaunator<number[]>,
 ) => {
+	// Clear the SVG element
 	svgElem.innerHTML = "";
 
+	// Call the appropriate renderer
 	const renderer = VIEW_RENDERERS[view];
 	renderer(points, delaunay, svgElem);
 };
