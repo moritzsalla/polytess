@@ -77,6 +77,13 @@ const renderShapesView: Renderer = (points, delaunay, svg) => {
 };
 
 const renderGradientView: Renderer = (points, delaunay, svg) => {
+	// Create a <defs> section if it doesn't exist
+	let defs = svg.querySelector("defs");
+	if (!defs) {
+		defs = document.createElementNS("http://www.w3.org/2000/svg", "defs");
+		svg.appendChild(defs);
+	}
+
 	// Draw triangles
 	for (let i = 0; i < delaunay.triangles.length; i += 3) {
 		const p1 = delaunay.triangles[i];
@@ -95,11 +102,42 @@ const renderGradientView: Renderer = (points, delaunay, svg) => {
 			"points",
 			`${points[p1][0]},${points[p1][1]} ${points[p2][0]},${points[p2][1]} ${points[p3][0]},${points[p3][1]}`,
 		);
-		polygon.setAttribute(
-			"fill",
-			`rgb(${points[p1][0]},${points[p1][1]},255)`,
+
+		// Create a unique ID for each gradient
+		const gradientId = `gradient-${i}`;
+
+		// Create a linear gradient
+		const gradient = document.createElementNS(
+			"http://www.w3.org/2000/svg",
+			"linearGradient",
 		);
-		// polygon.setAttribute("stroke", "black");
+		gradient.setAttribute("id", gradientId);
+		gradient.setAttribute("x1", "0%");
+		gradient.setAttribute("y1", "0%");
+		gradient.setAttribute("x2", "100%");
+		gradient.setAttribute("y2", "100%");
+
+		// Create gradient stops
+		const stops = [
+			{ offset: "0%", color: "red" },
+			{ offset: "100%", color: "blue" },
+		];
+
+		stops.forEach((stop) => {
+			const stopElem = document.createElementNS(
+				"http://www.w3.org/2000/svg",
+				"stop",
+			);
+			stopElem.setAttribute("offset", stop.offset);
+			stopElem.setAttribute("stop-color", stop.color);
+			gradient.appendChild(stopElem);
+		});
+
+		// Add the gradient to the <defs> section
+		defs.appendChild(gradient);
+
+		// Set the fill of the polygon to use the gradient
+		polygon.setAttribute("fill", `url(#${gradientId})`);
 
 		svg.appendChild(polygon);
 	}

@@ -1,5 +1,4 @@
 import { useRef } from "react";
-import "./App.css";
 import SvgCanvas, {
 	type OnClickFn,
 	type OnDragFn,
@@ -11,7 +10,6 @@ import { downloadSvgFile, generateInitialPoints } from "./utils";
 import { usePersistentState } from "./usePersistentStorage";
 import Menu from "./Menu/Menu";
 
-// TODO: finalize gradient view (gradient fill)
 // TODO: image trace view
 
 const ERROR_FALLBACK_COMPONENT = <div>Something went wrong</div>;
