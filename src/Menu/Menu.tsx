@@ -1,3 +1,4 @@
+import css from "./Menu.module.css";
 import Button from "../Button/Button";
 import { VIEWS, type View } from "../config";
 import { invertAppTheme } from "./utils";
@@ -12,46 +13,45 @@ type MenuProps = {
 
 const Menu = (props: MenuProps) => {
 	return (
-		<menu style={{ position: "fixed", bottom: 0, right: 0, padding: "1rem" }}>
+		<menu className={css.wrapper}>
 			<AppearancePanel />
 			<ViewPanel {...props} />
+			<ExportPanel {...props} />
 		</menu>
 	);
 };
 
 const AppearancePanel = () => {
 	return (
-		<div style={{ padding: "1rem" }}>
+		<div className={css.panel}>
+			<h2>Appearance</h2>
 			<Button onClick={() => invertAppTheme()}>Invert background</Button>
 		</div>
 	);
 };
 
-const ViewPanel = ({
-	view,
-	setView,
-	onExport,
-	onClear,
-	onGenerate,
-}: MenuProps) => {
+const ViewPanel = ({ view, setView }: MenuProps) => {
 	return (
-		<div style={{ padding: "1rem" }}>
-			<span>Current view: {view}</span>
+		<div className={css.panel}>
+			<h2>View ({view})</h2>
 			<div>
-				View:{" "}
 				{VIEWS.map(({ name }, index) => (
 					<Button key={index + name} onClick={() => setView(name)}>
 						{name}
 					</Button>
 				))}
 			</div>
+		</div>
+	);
+};
+
+const ExportPanel = ({ onExport, onClear, onGenerate }: MenuProps) => {
+	return (
+		<div className={css.panel}>
+			<h2>Export</h2>
 			<div>
 				<Button onClick={onExport}>Export SVG</Button>
-			</div>
-			<div>
 				<Button onClick={onClear}>Clear SVG</Button>
-			</div>
-			<div>
 				<Button onClick={onGenerate}>Generate random points</Button>
 			</div>
 		</div>

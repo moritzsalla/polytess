@@ -17,7 +17,10 @@ const ERROR_FALLBACK_COMPONENT = <div>Something went wrong</div>;
 const App = () => {
 	const svgRef = useRef<SVGSVGElement>(null);
 
-	const [view, setView] = usePersistentState<View>(STORAGE_KEYS.VIEW, "lines");
+	const [view, setView] = usePersistentState<View>(
+		STORAGE_KEYS.VIEW,
+		"gradient",
+	);
 	const [points, setPoints] = usePersistentState<Points>(
 		STORAGE_KEYS.POINTS,
 		[],

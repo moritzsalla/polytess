@@ -1,0 +1,8 @@
+.root {
+   padding: 0.5rem 1rem;
+   border-radius: 1rem;
+   background-color: var(--color-secondary);
+   color: var(--color-primary);
+   backdrop-filter: blur(0.5rem);
+   display: inline-block;
+}

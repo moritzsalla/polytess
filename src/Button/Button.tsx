@@ -1,3 +1,5 @@
+import css from "./Button.module.css";
+
 const Button = ({
 	children,
 	onClick,
@@ -6,7 +8,7 @@ const Button = ({
 	onClick: () => void;
 }) => {
 	return (
-		<button type='button' onClick={onClick}>
+		<button type='button' className={css.root} onClick={onClick}>
 			{children}
 		</button>
 	);

@@ -8,6 +8,7 @@ export const VIEWS = [
 export const STORAGE_KEYS = {
 	VIEW: "view",
 	POINTS: "points",
+	THEME_INVERTED: "themeInverted",
 } as const;
 
 export type View = (typeof VIEWS)[number]["name"];
