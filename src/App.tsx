@@ -4,7 +4,7 @@ import SvgCanvas, {
 	type OnDragFn,
 	type Points,
 } from "./SvgCanvas/SvgCanvas";
-import { STORAGE_KEYS, type View } from "./config";
+import { STORAGE_KEYS, type Mode, type View } from "./config";
 import ErrorBoundary from "./ErrorBoundary/ErrorBoundary";
 import { downloadSvgFile, generateInitialPoints } from "./utils";
 import { usePersistentState } from "./usePersistentStorage";
@@ -17,6 +17,7 @@ const ERROR_FALLBACK_COMPONENT = <div>Something went wrong</div>;
 const App = () => {
 	const svgRef = useRef<SVGSVGElement>(null);
 
+	const [mode, setMode] = usePersistentState<Mode>(STORAGE_KEYS.MODE, "draw");
 	const [view, setView] = usePersistentState<View>(
 		STORAGE_KEYS.VIEW,
 		"gradient",
@@ -70,7 +71,9 @@ const App = () => {
 			</ErrorBoundary>
 			<Menu
 				view={view}
+				mode={mode}
 				setView={setView}
+				setMode={setMode}
 				onExport={handleExportSVG}
 				onClear={() => setPoints([])}
 				onGenerate={() => setPoints(generateInitialPoints())}
