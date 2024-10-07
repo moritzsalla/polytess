@@ -1,3 +1,5 @@
+// https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/delaunator/index.d.ts
+
 declare class Delaunator<A extends ArrayLike<number>> {
 	/**
 	 * A Uint32Array array of triangle vertex indices (each group of three numbers forms a triangle).
@@ -27,8 +29,9 @@ declare class Delaunator<A extends ArrayLike<number>> {
 	/**
 	 * Constructs a delaunay triangulation object given a typed array of point coordinates of the form: [x0, y0, x1, y1, ...].
 	 * (use a typed array for best performance).
+	 * Optionally pass an end index `maxEdgeLength` to cut off the triangulation at a given edge length.
 	 */
-	constructor(points: A);
+	constructor(points: A, maxEdgeLength?: number);
 
 	/**
 	 * Constructs a delaunay triangulation object given an array of points ([x, y] by default).

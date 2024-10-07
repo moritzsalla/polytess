@@ -1,10 +1,18 @@
 import { orient2d } from "robust-predicates";
 
+// Adapted from
+// https://github.com/mapbox/delaunator
+
 const EPSILON = Math.pow(2, -52);
 const EDGE_STACK = new Uint32Array(512);
 
 export default class Delaunator {
-	static from(points, getX = defaultGetX, getY = defaultGetY) {
+	static from(
+		points,
+		getX = defaultGetX,
+		getY = defaultGetY,
+		maxEdgeLength = Infinity,
+	) {
 		const n = points.length;
 		const coords = new Float64Array(n * 2);
 
@@ -14,15 +22,16 @@ export default class Delaunator {
 			coords[2 * i + 1] = getY(p);
 		}
 
-		return new Delaunator(coords);
+		return new Delaunator(coords, maxEdgeLength);
 	}
 
-	constructor(coords) {
+	constructor(coords, maxEdgeLength = Infinity) {
 		const n = coords.length >> 1;
 		if (n > 0 && typeof coords[0] !== "number")
 			throw new Error("Expected coords to contain numbers.");
 
 		this.coords = coords;
+		this.maxEdgeLength = maxEdgeLength;
 
 		// arrays that will store the triangulation graph
 		const maxTriangles = Math.max(2 * n - 5, 0);
@@ -306,6 +315,47 @@ export default class Delaunator {
 		// trim typed triangle mesh arrays
 		this.triangles = this._triangles.subarray(0, this.trianglesLen);
 		this.halfedges = this._halfedges.subarray(0, this.trianglesLen);
+
+		this.filterTrianglesByMaxEdgeLength();
+	}
+
+	filterTrianglesByMaxEdgeLength() {
+		const { coords, triangles, halfedges } = this;
+		const filteredTriangles = [];
+		const filteredHalfedges = [];
+
+		for (let i = 0; i < triangles.length; i += 3) {
+			const a = triangles[i];
+			const b = triangles[i + 1];
+			const c = triangles[i + 2];
+
+			const ax = coords[2 * a];
+			const ay = coords[2 * a + 1];
+			const bx = coords[2 * b];
+			const by = coords[2 * b + 1];
+			const cx = coords[2 * c];
+			const cy = coords[2 * c + 1];
+
+			const distAB = Math.sqrt(dist(ax, ay, bx, by));
+			const distBC = Math.sqrt(dist(bx, by, cx, cy));
+			const distCA = Math.sqrt(dist(cx, cy, ax, ay));
+
+			if (
+				distAB <= this.maxEdgeLength &&
+				distBC <= this.maxEdgeLength &&
+				distCA <= this.maxEdgeLength
+			) {
+				filteredTriangles.push(a, b, c);
+				filteredHalfedges.push(
+					halfedges[i],
+					halfedges[i + 1],
+					halfedges[i + 2],
+				);
+			}
+		}
+
+		this.triangles = new Uint32Array(filteredTriangles);
+		this.halfedges = new Int32Array(filteredHalfedges);
 	}
 
 	_hashKey(x, y) {

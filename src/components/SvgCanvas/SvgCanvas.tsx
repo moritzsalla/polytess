@@ -30,7 +30,9 @@ const SvgCanvas = forwardRef<SVGSVGElement, SvgCanvasProps>(
 				console.error("SVG element not found");
 				return;
 			}
-			const delaunay = new Delaunator(points.flat());
+
+			const maxEdgeLength = 100;
+			const delaunay = new Delaunator(points.flat(), maxEdgeLength);
 			generateView(view, svgElem, points, delaunay);
 		}, [points, view]);
 
