@@ -1,16 +1,23 @@
 import css from "./SvgCanvas.module.css";
 
 import { useRef } from "react";
-import { ERASE_MODE_RADIUS, type Mode } from "../config";
+import { ERASE_MODE_RADIUS, type Mode } from "../../config";
 import { useMove } from "@use-gesture/react";
 
-const SvgCanvasCustomCursor = ({
-	mode,
-	svgRef,
-}: {
+type SvgCanvasCustomCursorProps = {
 	mode: Mode;
 	svgRef: React.RefObject<SVGSVGElement>;
-}) => {
+};
+
+const SvgCanvasCustomCursor = (props: SvgCanvasCustomCursorProps) => {
+	if (props.mode === "erase") {
+		return <EraseCursor {...props} />;
+	}
+
+	return null;
+};
+
+const EraseCursor = ({ mode, svgRef }: SvgCanvasCustomCursorProps) => {
 	const cursorRef = useRef<React.ElementRef<"div">>(null);
 
 	useMove(
@@ -29,10 +36,11 @@ const SvgCanvasCustomCursor = ({
 		<div
 			ref={cursorRef}
 			className={css.customCursor}
-			style={{
-				width: ERASE_MODE_RADIUS * 2,
-				height: ERASE_MODE_RADIUS * 2,
-			}}
+			style={
+				{
+					"--radius": `${ERASE_MODE_RADIUS}px`,
+				} as React.CSSProperties
+			}
 		/>
 	);
 };

@@ -1,10 +1,12 @@
 import css from "./SvgCanvas.module.css";
 import React, { forwardRef, useEffect, useRef } from "react";
-import Delaunator from "delaunator";
-import type { Mode, View } from "../config";
+
+import type { Mode, View } from "../../config";
 import { generateView } from "./utils";
-import { mergeRefs } from "../utils";
+
 import SvgCanvasCustomCursor from "./SvgCanvasCustomCursor";
+import { mergeRefs } from "../../utils";
+import Delaunator from "../../lib/delaunator";
 
 export type Points = Array<[number, number]>;
 export type OnClickFn = React.SVGProps<SVGSVGElement>["onClick"];
@@ -53,7 +55,5 @@ const SvgCanvas = forwardRef<SVGSVGElement, SvgCanvasProps>(
 		);
 	},
 );
-
-
 
 export default SvgCanvas;

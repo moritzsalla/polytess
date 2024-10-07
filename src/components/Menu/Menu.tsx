@@ -1,6 +1,6 @@
 import css from "./Menu.module.css";
 import Button from "../Button/Button";
-import { MODES, VIEWS, type Mode, type View } from "../config";
+import { MODES, VIEWS, type Mode, type View } from "../../config";
 import { invertAppTheme } from "./utils";
 
 type MenuProps = {

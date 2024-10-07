@@ -1,15 +1,16 @@
 import { useRef } from "react";
-import SvgCanvas, { type Points } from "./SvgCanvas/SvgCanvas";
+import SvgCanvas, { type Points } from "./components/SvgCanvas/SvgCanvas";
 import {
 	ERASE_MODE_RADIUS,
 	STORAGE_KEYS,
 	type Mode,
 	type View,
 } from "./config";
-import ErrorBoundary from "./ErrorBoundary/ErrorBoundary";
-import { downloadSvgFile, generateInitialPoints } from "./utils";
+import ErrorBoundary from "./components/ErrorBoundary/ErrorBoundary";
+
 import { usePersistentState } from "./hooks/usePersistentStorage";
-import Menu from "./Menu/Menu";
+import Menu from "./components/Menu/Menu";
+import { downloadSvgFile, generateInitialPoints } from "./utils";
 
 // TODO: image trace view
 

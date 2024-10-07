@@ -1,6 +1,6 @@
 import type Delaunator from "delaunator";
 import type { Points } from "./SvgCanvas";
-import type { View } from "../config";
+import type { View } from "../../config";
 
 type Renderer = (
 	points: Points,

@@ -1,4 +1,4 @@
-import type { Points } from "./SvgCanvas/SvgCanvas";
+import type { Points } from "./components/SvgCanvas/SvgCanvas";
 
 export const generateCirclePoints = (
 	centerX: number,
@@ -92,4 +92,3 @@ export const mergeRefs =
 			}
 		});
 	};
-
