@@ -1,7 +1,6 @@
 import css from "./Menu.module.css";
 import Button from "../Button/Button";
 import { MODES, VIEWS } from "../../config";
-import { invertAppTheme } from "./utils";
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "../../store";
 import { downloadSvgFile } from "../../utils";
@@ -11,6 +10,8 @@ import {
 	setMode,
 	setView,
 } from "../../store/canvasSlice";
+import { invertTheme } from "../../store/themeSlice";
+import { useCanvas } from "../../hooks/useCanvas";
 
 const Menu = () => {
 	return (
@@ -25,9 +26,7 @@ const Menu = () => {
 
 const DrawingModePanel = () => {
 	const dispatch = useDispatch();
-	const { mode } = useSelector<RootState, RootState["canvas"]>(
-		(state) => state.canvas,
-	);
+	const { mode } = useCanvas();
 
 	return (
 		<div className={css.panel}>
@@ -47,19 +46,21 @@ const DrawingModePanel = () => {
 };
 
 const AppearancePanel = () => {
+	const dispatch = useDispatch();
+
 	return (
 		<div className={css.panel}>
 			<h2>Appearance</h2>
-			<Button onClick={() => invertAppTheme()}>Invert background</Button>
+			<Button onClick={() => dispatch(invertTheme())}>
+				Invert background
+			</Button>
 		</div>
 	);
 };
 
 const ViewPanel = () => {
 	const dispatch = useDispatch();
-	const { view } = useSelector<RootState, RootState["canvas"]>(
-		(state) => state.canvas,
-	);
+	const { view } = useCanvas();
 
 	return (
 		<div className={css.panel}>

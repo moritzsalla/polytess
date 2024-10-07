@@ -4,11 +4,11 @@ import { STORAGE_KEYS, type Mode, type View } from "../config";
 import { generateRandomPoints } from "../utils";
 import type { Points } from "../components/SvgCanvas/SvgCanvas";
 
-interface CanvasState {
+type CanvasState = {
 	mode: Mode;
 	view: View;
 	points: Points;
-}
+};
 
 const getInitialState = (): CanvasState => {
 	return {

@@ -14,6 +14,7 @@ export const STORAGE_KEYS = {
 	VIEW: "view",
 	POINTS: "points",
 	MODE: "mode",
+	THEME: "theme",
 } as const;
 
 export const ERASE_MODE_RADIUS = 60;

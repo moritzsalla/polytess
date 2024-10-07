@@ -5,10 +5,10 @@ import { generateView } from "./utils";
 import SvgCanvasCustomCursor from "./SvgCanvasCustomCursor";
 import { mergeRefs } from "../../utils";
 import Delaunator from "../../lib/delaunator";
-import { useDispatch, useSelector } from "react-redux";
-import type { RootState } from "../../store";
 import { addPoint, erasePoints } from "../../store/canvasSlice";
 import { ERASE_MODE_RADIUS } from "../../config";
+import { useCanvas } from "../../hooks/useCanvas";
+import { useDispatch } from "react-redux";
 
 export type Points = Array<[number, number]>;
 export type OnClickFn = React.SVGProps<SVGSVGElement>["onClick"];
@@ -16,14 +16,13 @@ export type OnDragFn = React.SVGProps<SVGSVGElement>["onPointerMove"];
 
 type SvgCanvasProps = {};
 
+const MAX_EDGE_LENGTH = 100;
+
 const SvgCanvas = forwardRef<SVGSVGElement, SvgCanvasProps>(
 	(_, forwardedRef) => {
 		const svgRef = useRef<React.ElementRef<"svg">>(null);
 		const dispatch = useDispatch();
-		const { mode, view, points } = useSelector<
-			RootState,
-			RootState["canvas"]
-		>((state) => state.canvas);
+		const { mode, view, points } = useCanvas();
 
 		useEffect(() => {
 			const svgElem = svgRef.current;
@@ -32,8 +31,7 @@ const SvgCanvas = forwardRef<SVGSVGElement, SvgCanvasProps>(
 				return;
 			}
 
-			const maxEdgeLength = 100;
-			const delaunay = new Delaunator(points.flat(), maxEdgeLength);
+			const delaunay = new Delaunator(points.flat(), MAX_EDGE_LENGTH);
 			generateView(view, svgElem, points, delaunay);
 		}, [points, view]);
 
