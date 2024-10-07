@@ -7,11 +7,11 @@ import { downloadSvgFile } from "../../utils";
 import {
 	clearPoints,
 	generatePoints,
+	saveToLocalStorage,
 	setMode,
 	setView,
 } from "../../store/canvasSlice";
 import { invertTheme } from "../../store/themeSlice";
-import { useCanvas } from "../../hooks/useCanvas";
 
 const Menu = () => {
 	return (
@@ -26,7 +26,9 @@ const Menu = () => {
 
 const DrawingModePanel = () => {
 	const dispatch = useDispatch();
-	const { mode } = useCanvas();
+	const mode = useSelector<RootState, RootState["canvas"]["mode"]>(
+		(state) => state.canvas.mode,
+	);
 
 	return (
 		<div className={css.panel}>
@@ -63,7 +65,9 @@ const AppearancePanel = () => {
 
 const ViewPanel = () => {
 	const dispatch = useDispatch();
-	const { view } = useCanvas();
+	const view = useSelector<RootState, RootState["canvas"]["view"]>(
+		(state) => state.canvas.view,
+	);
 
 	return (
 		<div className={css.panel}>
@@ -94,13 +98,18 @@ const ExportPanel = () => {
 
 	return (
 		<div className={css.panel}>
-			<h2>Export</h2>
 			<div>
-				<Button onClick={handleExportSVG}>Export SVG</Button>
-				<Button onClick={() => dispatch(clearPoints())}>Clear SVG</Button>
-				<Button onClick={() => dispatch(generatePoints())}>
-					Generate random points
-				</Button>
+				<Button onClick={() => dispatch(saveToLocalStorage())}>Save</Button>
+			</div>
+			<div>
+				<h2>Export</h2>
+				<div>
+					<Button onClick={handleExportSVG}>Export</Button>
+					<Button onClick={() => dispatch(clearPoints())}>Clear</Button>
+					<Button onClick={() => dispatch(generatePoints())}>
+						Random
+					</Button>
+				</div>
 			</div>
 		</div>
 	);

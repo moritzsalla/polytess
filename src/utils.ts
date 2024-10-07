@@ -30,33 +30,41 @@ export const generatePolygonPoints = (
 	});
 };
 
-// TODO fully randomize
 export const generateRandomPoints = (): Points => {
-	const leftCircle = generateCirclePoints(150, 250, 120, 40);
-	const rightCircle = generateCirclePoints(450, 250, 100, 30);
-	const topPolygon = generatePolygonPoints(300, 100, 80, 4);
-	const bottomPolygon = generatePolygonPoints(300, 400, 70, 6);
+	const w = window.innerWidth;
+	const h = window.innerHeight;
+	const points: Points = [];
 
-	// Additional points for more complex triangulation
-	const additionalPoints: Points = [
-		[50, 50],
-		[550, 50],
-		[50, 450],
-		[550, 450], // corners
-		[300, 250], // center
-		[200, 150],
-		[400, 150],
-		[200, 350],
-		[400, 350], // midpoints
-	];
+	// Function to generate a random number between min and max
+	const random = (min: number, max: number) =>
+		Math.random() * (max - min) + min;
 
-	return [
-		...leftCircle,
-		...rightCircle,
-		...topPolygon,
-		...bottomPolygon,
-		...additionalPoints,
-	];
+	// Generate random shapes
+	const numShapes = Math.floor(random(3, 8));
+	for (let i = 0; i < numShapes; i++) {
+		const x = random(0, w);
+		const y = random(0, h);
+		const radius = random(30, 100);
+		const numSides = Math.floor(random(3, 8));
+
+		if (Math.random() < 0.5) {
+			// 50% chance of circle
+			points.push(
+				...generateCirclePoints(x, y, radius, Math.floor(random(20, 50))),
+			);
+		} else {
+			// 50% chance of polygon
+			points.push(...generatePolygonPoints(x, y, radius, numSides));
+		}
+	}
+
+	// Add random individual points
+	const numExtraPoints = Math.floor(random(10, 30));
+	for (let i = 0; i < numExtraPoints; i++) {
+		points.push([random(0, w), random(0, h)]);
+	}
+
+	return points;
 };
 
 export const downloadSvgFile = (svg: SVGSVGElement, filename: string) => {

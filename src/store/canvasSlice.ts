@@ -21,26 +21,19 @@ const getInitialState = (): CanvasState => {
 const setModeAction = (state: CanvasState, action: PayloadAction<Mode>) => {
 	// Update mode
 	state.mode = action.payload;
-	// Write to local storage
-	localStorage.setItem(STORAGE_KEYS.MODE, action.payload);
 };
 
 const setViewAction = (state: CanvasState, action: PayloadAction<View>) => {
 	// Update view
 	state.view = action.payload;
-	// Write to local storage
-	localStorage.setItem(STORAGE_KEYS.VIEW, action.payload);
 };
 
 const addPointAction = (
 	state: CanvasState,
 	action: PayloadAction<[number, number]>,
 ) => {
-	console.log("addPointAction");
 	// Add a point to the array
 	state.points.push(action.payload);
-	// Write to local storage
-	localStorage.setItem(STORAGE_KEYS.POINTS, JSON.stringify(state.points));
 };
 
 const erasePointsAction = (
@@ -55,21 +48,24 @@ const erasePointsAction = (
 		);
 		return distance > action.payload.radius;
 	});
-	// Write to local storage
-	localStorage.setItem(STORAGE_KEYS.POINTS, JSON.stringify(state.points));
 };
 
 const clearPointsAction = (state: CanvasState) => {
 	state.points = [];
-	// Write to local storage
-	localStorage.setItem(STORAGE_KEYS.POINTS, JSON.stringify([]));
 };
 
 const generatePointsAction = (state: CanvasState) => {
 	// Generate random points
 	state.points = generateRandomPoints();
-	// Write to local storage
+};
+
+// Save program to localhost
+// (changes will persist between page reloads)
+const saveToLocalStorageAction = (state: CanvasState) => {
+	// Save program snapshot to local storage
 	localStorage.setItem(STORAGE_KEYS.POINTS, JSON.stringify(state.points));
+	localStorage.setItem(STORAGE_KEYS.VIEW, state.view);
+	localStorage.setItem(STORAGE_KEYS.MODE, state.mode);
 };
 
 const canvasSlice = createSlice({
@@ -82,6 +78,7 @@ const canvasSlice = createSlice({
 		erasePoints: erasePointsAction,
 		clearPoints: clearPointsAction,
 		generatePoints: generatePointsAction,
+		saveToLocalStorage: saveToLocalStorageAction,
 	},
 });
 
@@ -92,6 +89,7 @@ export const {
 	generatePoints,
 	setMode,
 	setView,
+	saveToLocalStorage,
 } = canvasSlice.actions;
 
 export default canvasSlice.reducer;

@@ -38,7 +38,7 @@ const EraseCursor = ({ mode, svgRef }: SvgCanvasCustomCursorProps) => {
 			className={css.customCursor}
 			style={
 				{
-					"--radius": `${ERASE_MODE_RADIUS}px`,
+					"--radius": `${ERASE_MODE_RADIUS * 2}px`,
 				} as React.CSSProperties
 			}
 		/>

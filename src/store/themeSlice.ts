@@ -22,7 +22,6 @@ const applyTheme = (theme: ThemeValue) => {
 
 const getInitialTheme = (): ThemeValue => {
 	const storedTheme = localStorage.getItem(STORAGE_KEYS.THEME) as ThemeValue;
-	console.log(storedTheme);
 	return storedTheme || "light";
 };
 
