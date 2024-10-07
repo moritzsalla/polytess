@@ -1,36 +1,43 @@
 import css from "./Menu.module.css";
 import Button from "../Button/Button";
-import { MODES, VIEWS, type Mode, type View } from "../../config";
+import { MODES, VIEWS } from "../../config";
 import { invertAppTheme } from "./utils";
+import { useDispatch, useSelector } from "react-redux";
+import type { RootState } from "../../store";
+import { downloadSvgFile } from "../../utils";
+import {
+	clearPoints,
+	generatePoints,
+	setMode,
+	setView,
+} from "../../store/canvasSlice";
 
-type MenuProps = {
-	view: View;
-	mode: Mode;
-	setView: (view: View) => void;
-	setMode: (mode: Mode) => void;
-	onExport: () => void;
-	onClear: () => void;
-	onGenerate: () => void;
-};
-
-const Menu = (props: MenuProps) => {
+const Menu = () => {
 	return (
 		<menu className={css.wrapper}>
-			<DrawingModePanel {...props} />
+			<DrawingModePanel />
 			<AppearancePanel />
-			<ViewPanel {...props} />
-			<ExportPanel {...props} />
+			<ViewPanel />
+			<ExportPanel />
 		</menu>
 	);
 };
 
-const DrawingModePanel = ({ mode, setMode }: MenuProps) => {
+const DrawingModePanel = () => {
+	const dispatch = useDispatch();
+	const { mode } = useSelector<RootState, RootState["canvas"]>(
+		(state) => state.canvas,
+	);
+
 	return (
 		<div className={css.panel}>
 			<h2>Drawing mode ({mode})</h2>
 			<div>
 				{MODES.map(({ name }, index) => (
-					<Button key={`${index}${name}`} onClick={() => setMode(name)}>
+					<Button
+						key={`${index}${name}`}
+						onClick={() => dispatch(setMode(name))}
+					>
 						{name}
 					</Button>
 				))}
@@ -48,13 +55,21 @@ const AppearancePanel = () => {
 	);
 };
 
-const ViewPanel = ({ view, setView }: MenuProps) => {
+const ViewPanel = () => {
+	const dispatch = useDispatch();
+	const { view } = useSelector<RootState, RootState["canvas"]>(
+		(state) => state.canvas,
+	);
+
 	return (
 		<div className={css.panel}>
 			<h2>View ({view})</h2>
 			<div>
 				{VIEWS.map(({ name }, index) => (
-					<Button key={`${index}${name}`} onClick={() => setView(name)}>
+					<Button
+						key={`${index}${name}`}
+						onClick={() => dispatch(setView(name))}
+					>
 						{name}
 					</Button>
 				))}
@@ -63,14 +78,25 @@ const ViewPanel = ({ view, setView }: MenuProps) => {
 	);
 };
 
-const ExportPanel = ({ onExport, onClear, onGenerate }: MenuProps) => {
+const ExportPanel = () => {
+	const dispatch = useDispatch();
+
+	const handleExportSVG = () => {
+		const svgElement = document.querySelector("svg");
+		if (svgElement) {
+			downloadSvgFile(svgElement, "export");
+		}
+	};
+
 	return (
 		<div className={css.panel}>
 			<h2>Export</h2>
 			<div>
-				<Button onClick={onExport}>Export SVG</Button>
-				<Button onClick={onClear}>Clear SVG</Button>
-				<Button onClick={onGenerate}>Generate random points</Button>
+				<Button onClick={handleExportSVG}>Export SVG</Button>
+				<Button onClick={() => dispatch(clearPoints())}>Clear SVG</Button>
+				<Button onClick={() => dispatch(generatePoints())}>
+					Generate random points
+				</Button>
 			</div>
 		</div>
 	);

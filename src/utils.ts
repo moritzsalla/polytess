@@ -31,7 +31,7 @@ export const generatePolygonPoints = (
 };
 
 // TODO fully randomize
-export const generateInitialPoints = (): Points => {
+export const generateRandomPoints = (): Points => {
 	const leftCircle = generateCirclePoints(150, 250, 120, 40);
 	const rightCircle = generateCirclePoints(450, 250, 100, 30);
 	const topPolygon = generatePolygonPoints(300, 100, 80, 4);
