@@ -2,12 +2,14 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { STORAGE_KEYS } from "../config";
 
-export type ProgramTheme = "light" | "dark";
+
 type ThemeState = {
-	theme: ProgramTheme;
+	value: "light" | "dark";
 };
 
-const applyTheme = (theme: ProgramTheme) => {
+type ThemeValue = ThemeState["value"];
+
+const applyTheme = (theme: ThemeValue) => {
 	const root = document.documentElement;
 	if (theme === "dark") {
 		root.style.setProperty("--color-primary", "#000000");
@@ -18,14 +20,14 @@ const applyTheme = (theme: ProgramTheme) => {
 	}
 };
 
-const getInitialTheme = (): ProgramTheme => {
-	const storedTheme = localStorage.getItem(STORAGE_KEYS.THEME) as ProgramTheme;
+const getInitialTheme = (): ThemeValue => {
+	const storedTheme = localStorage.getItem(STORAGE_KEYS.THEME) as ThemeValue;
 	console.log(storedTheme);
 	return storedTheme || "light";
 };
 
 const initialState: ThemeState = {
-	theme: getInitialTheme(),
+	value: getInitialTheme(),
 };
 
 const themeSlice = createSlice({
@@ -33,9 +35,9 @@ const themeSlice = createSlice({
 	initialState,
 	reducers: {
 		invertTheme: (state) => {
-			state.theme = state.theme === "light" ? "dark" : "light";
-			localStorage.setItem(STORAGE_KEYS.THEME, state.theme);
-			applyTheme(state.theme);
+			state.value = state.value === "light" ? "dark" : "light";
+			localStorage.setItem(STORAGE_KEYS.THEME, state.value);
+			applyTheme(state.value);
 		},
 	},
 });
@@ -44,4 +46,4 @@ export const { invertTheme } = themeSlice.actions;
 
 export default themeSlice.reducer;
 
-applyTheme(initialState.theme);
+applyTheme(initialState.value);

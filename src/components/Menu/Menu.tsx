@@ -47,12 +47,15 @@ const DrawingModePanel = () => {
 
 const AppearancePanel = () => {
 	const dispatch = useDispatch();
+	const theme = useSelector<RootState, RootState["theme"]["value"]>(
+		(state) => state.theme.value,
+	);
 
 	return (
 		<div className={css.panel}>
 			<h2>Appearance</h2>
 			<Button onClick={() => dispatch(invertTheme())}>
-				Invert background
+				Invert background ({theme})
 			</Button>
 		</div>
 	);
