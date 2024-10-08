@@ -1,8 +1,23 @@
 .root {
-   padding: 0.5rem 1rem;
+   padding: 0.75rem 1.25rem;
    border-radius: 1rem;
-   background-color: var(--color-secondary);
-   color: var(--color-primary);
+   background-color: color-mix(in srgb, var(--color-secondary) 10%, transparent);
+   color: var(--color-secondary);
    backdrop-filter: blur(0.5rem);
    display: inline-block;
+   text-align: center;
+   width: fit-content;
+   transition: background-color 0.15s, transform 0.15s;
+   scale: 1;
+   cursor: pointer;
+
+   &:hover {
+      background-color: color-mix(in srgb, var(--color-secondary) 20%, transparent);
+      scale: 1.05;
+   }
+
+   &:active {
+      background-color: color-mix(in srgb, var(--color-secondary) 10%, transparent);
+      scale: 1;
+   }
 }

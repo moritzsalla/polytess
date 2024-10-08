@@ -20,115 +20,98 @@ import { VIEWS } from "../SvgCanvas/renderers";
 import { downloadSvgFile } from "../utils/svg";
 
 const Menu = () => {
+	const [showControls, setShowControls] = useState(false);
+
 	return (
 		<menu className={css.wrapper}>
-			<DrawingModePanel />
-			<AppearancePanel />
-			<ViewPanel />
-			<ExportPanel />
+			{showControls && <Controls />}
+
+			<div className={css.overlay}>
+				<Button onClick={() => setShowControls((state) => !state)}>
+					{showControls ? "hide" : "show"}
+				</Button>
+			</div>
 		</menu>
 	);
 };
 
-const DrawingModePanel = () => {
+const Controls = () => {
 	const dispatch = useDispatch();
-	const mode = useSelector<RootState, RootState["canvas"]["mode"]>(
-		(state) => state.canvas.mode,
-	);
+	const [saved, setSaved] = useState(false);
 
 	return (
+		<div className={css.inner}>
+			<Panel
+				title='Mode'
+				buttons={[
+					...MODES.map(({ name }) => ({
+						label: name,
+						onClick: () => dispatch(setMode(name)),
+					})),
+					{ label: "clear", onClick: () => dispatch(clearPoints()) },
+					{ label: "random", onClick: () => dispatch(generatePoints()) },
+					{ label: "clear", onClick: () => dispatch(clearPoints()) },
+				]}
+			/>
+			<Panel
+				title='View'
+				buttons={VIEWS.map(({ name }) => ({
+					label: name,
+					onClick: () => dispatch(setView(name)),
+				}))}
+			/>
+			<Panel
+				title='Theme'
+				buttons={[
+					{ label: "invert", onClick: () => dispatch(invertTheme()) },
+				]}
+			/>
+			<Panel
+				title='Export'
+				buttons={[
+					{
+						label: saved ? "saved!" : "save",
+						onClick: () => {
+							// Save current state of program to localhost
+							// to persist changes between page reloads.
+							dispatch(themeSaveToLocalStorage());
+							dispatch(canvasSaveToLocalStorage());
+							// Show "Saved!" for 2 seconds
+							setSaved(true);
+							setTimeout(() => setSaved(false), 2000);
+						},
+					},
+					{
+						label: "export",
+						onClick: () => {
+							const svgElement = document.querySelector("svg");
+							if (svgElement) {
+								downloadSvgFile(svgElement, "export");
+							}
+						},
+					},
+				]}
+			/>
+		</div>
+	);
+};
+
+const Panel = ({
+	title,
+	buttons,
+}: {
+	title: string;
+	buttons: Array<{ label: string; onClick: () => void }>;
+}) => {
+	return (
 		<div className={css.panel}>
-			<h2>Drawing mode ({mode})</h2>
-			<div>
-				{MODES.map(({ name }, index) => (
-					<Button
-						key={`${index}${name}`}
-						onClick={() => dispatch(setMode(name))}
-					>
-						{name}
+			<h2>({title})</h2>
+			<div className={css.grid}>
+				{buttons.map(({ label, onClick }, index) => (
+					<Button key={`${index}${label}`} onClick={onClick}>
+						{label}
 					</Button>
 				))}
-			</div>
-		</div>
-	);
-};
-
-const AppearancePanel = () => {
-	const dispatch = useDispatch();
-	const theme = useSelector<RootState, RootState["theme"]["value"]>(
-		(state) => state.theme.value,
-	);
-
-	return (
-		<div className={css.panel}>
-			<h2>Appearance</h2>
-			<Button onClick={() => dispatch(invertTheme())}>
-				Invert background ({theme})
-			</Button>
-		</div>
-	);
-};
-
-const ViewPanel = () => {
-	const dispatch = useDispatch();
-	const view = useSelector<RootState, RootState["canvas"]["view"]>(
-		(state) => state.canvas.view,
-	);
-
-	return (
-		<div className={css.panel}>
-			<h2>View ({view})</h2>
-			<div>
-				{VIEWS.map(({ name }, index) => (
-					<Button
-						key={`${index}${name}`}
-						onClick={() => dispatch(setView(name))}
-					>
-						{name}
-					</Button>
-				))}
-			</div>
-		</div>
-	);
-};
-
-const ExportPanel = () => {
-	const dispatch = useDispatch();
-	const [clicked, setClicked] = useState(false);
-
-	const handleExportSVG = () => {
-		const svgElement = document.querySelector("svg");
-		if (svgElement) {
-			downloadSvgFile(svgElement, "export");
-		}
-	};
-
-	return (
-		<div className={css.panel}>
-			<div>
-				<Button
-					onClick={() => {
-						// Save current state of program to localhost
-						// to persist changes between page reloads.
-						dispatch(themeSaveToLocalStorage());
-						dispatch(canvasSaveToLocalStorage());
-						// Show "Saved!" for 2 seconds
-						setClicked(true);
-						setTimeout(() => setClicked(false), 2000);
-					}}
-				>
-					{clicked ? "Saved!" : "Save"}
-				</Button>
-			</div>
-			<div>
-				<h2>Export</h2>
-				<div>
-					<Button onClick={handleExportSVG}>Export</Button>
-					<Button onClick={() => dispatch(clearPoints())}>Clear</Button>
-					<Button onClick={() => dispatch(generatePoints())}>
-						Random
-					</Button>
-				</div>
 			</div>
 		</div>
 	);

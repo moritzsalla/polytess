@@ -2,15 +2,45 @@
    position: fixed;
    bottom: 0;
    right: 0;
-   display: flex;
+   width: 100%;
+   pointer-events: none;
+   box-sizing: border-box;
+
+   div {
+      pointer-events: none;
+   }
+
+   button {
+      pointer-events: auto;
+   }
+}
+
+.inner {
+   padding: 2rem;
+   display: grid;
    gap: 1rem;
-   padding: 1rem;
+   grid-template-columns: repeat(6, 1fr);
+   border-radius: 1rem;
 }
 
 .panel {
    display: flex;
    flex-direction: column;
    gap: 1rem;
-   padding: 1rem;
    color: var(--color-secondary);
+   pointer-events: none;
+}
+
+.grid {
+   display: flex;
+   flex-direction: column;
+   flex-wrap: wrap;
+   gap: 0.35rem;
+}
+
+.overlay {
+   position: fixed;
+   bottom: 0;
+   right: 0;
+   padding: 2rem;
 }
