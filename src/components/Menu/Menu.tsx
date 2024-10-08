@@ -43,37 +43,41 @@ const Controls = () => {
 		(state) => state.canvas.view,
 	);
 
-	const controls = [] as PanelButtonsConfig;
+	const controls = [] as PanelInputsConfig;
 
 	if (view === "gradient") {
-		// View specific controls
+		// TODO View specific controls
 	}
 
 	return (
 		<div className={css.inner}>
 			<Panel
 				title='Mode'
-				buttons={MODES.map(({ name }) => ({
+				inputs={MODES.map(({ name }) => ({
+					type: "button",
 					label: name,
 					onClick: () => dispatch(setMode(name)),
 				}))}
 			/>
 			<Panel
 				title='View'
-				buttons={VIEWS.map(({ name }) => ({
+				inputs={VIEWS.map(({ name }) => ({
+					type: "button",
 					label: name,
 					onClick: () => dispatch(setView(name)),
 				}))}
 			/>
 			<Panel
 				title='Controls'
-				buttons={[
+				inputs={[
 					...controls,
 					{
+						type: "button",
 						label: "random",
 						onClick: () => dispatch(generatePoints()),
 					},
 					{
+						type: "button",
 						label: "clear",
 						onClick: () => dispatch(clearPoints()),
 					},
@@ -81,14 +85,19 @@ const Controls = () => {
 			/>
 			<Panel
 				title='Theme'
-				buttons={[
-					{ label: "invert", onClick: () => dispatch(invertTheme()) },
+				inputs={[
+					{
+						type: "button",
+						label: "invert",
+						onClick: () => dispatch(invertTheme()),
+					},
 				]}
 			/>
 			<Panel
 				title='Export'
-				buttons={[
+				inputs={[
 					{
+						type: "button",
 						label: saved ? "saved!" : "save",
 						onClick: () => {
 							// Save current state of program to localhost
@@ -101,6 +110,7 @@ const Controls = () => {
 						},
 					},
 					{
+						type: "button",
 						label: "export",
 						onClick: () => {
 							const svgElement = document.querySelector("svg");
@@ -115,24 +125,47 @@ const Controls = () => {
 	);
 };
 
-type PanelButtonsConfig = Array<{ label: string; onClick: () => void }>;
+type PanelInputsConfig = Array<
+	// Button
+	| {
+			type: "button";
+			label: string;
+			onClick: () => void;
+	  }
+	// Color picker
+	| {
+			type: "color";
+			label: string;
+			value: string;
+			onChange: (value: string) => void;
+	  }
+>;
 
 const Panel = ({
 	title,
-	buttons,
+	inputs,
 }: {
 	title: string;
-	buttons: PanelButtonsConfig;
+	inputs: PanelInputsConfig;
 }) => {
 	return (
 		<div className={css.panel}>
 			<h2>({title})</h2>
 			<div className={css.grid}>
-				{buttons.map(({ label, onClick }, index) => (
-					<Button key={`${index}${label}`} onClick={onClick}>
-						{label}
-					</Button>
-				))}
+				{inputs.map((input, index) => {
+					// TODO Add more input types
+
+					if (input.type === "button") {
+						const { label, onClick } = input;
+						return (
+							<Button key={`${index}${label}`} onClick={onClick}>
+								{label}
+							</Button>
+						);
+					}
+
+					return null;
+				})}
 			</div>
 		</div>
 	);
