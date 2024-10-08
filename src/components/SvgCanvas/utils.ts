@@ -37,6 +37,10 @@ const renderLinesView: Renderer = (points, delaunay, svg) => {
 };
 
 const renderShapesView: Renderer = (points, delaunay, svg) => {
+	// Create a defs element to hold our patterns
+	const defs = document.createElementNS("http://www.w3.org/2000/svg", "defs");
+	svg.appendChild(defs);
+
 	// Draw triangles
 	for (let i = 0; i < delaunay.triangles.length; i += 3) {
 		const p1 = delaunay.triangles[i];
@@ -56,21 +60,34 @@ const renderShapesView: Renderer = (points, delaunay, svg) => {
 			`${points[p1][0]},${points[p1][1]} ${points[p2][0]},${points[p2][1]} ${points[p3][0]},${points[p3][1]}`,
 		);
 
-		const possibleColors = [
-			"#F2DC5D",
-			"#F2A359",
-			"#DB9065",
-			"#A4031F",
-			"#240B36",
-			"#8075FF",
-			"#F8F0FB",
-		];
+		// Create a unique pattern for this polygon
+		const patternId = `imagePattern${i}`;
+		const pattern = document.createElementNS(
+			"http://www.w3.org/2000/svg",
+			"pattern",
+		);
+		pattern.setAttribute("id", patternId);
+		pattern.setAttribute("patternUnits", "userSpaceOnUse");
+		pattern.setAttribute("width", "100%");
+		pattern.setAttribute("height", "100%");
 
-		const color =
-			possibleColors[Math.floor(Math.random() * possibleColors.length)];
+		const image = document.createElementNS(
+			"http://www.w3.org/2000/svg",
+			"image",
+		);
+		image.setAttribute("href", "logo192.png");
+		image.setAttribute("width", "100%");
+		image.setAttribute("height", "100%");
+		image.setAttribute("preserveAspectRatio", "xMidYMid slice");
 
-		polygon.setAttribute("fill", color);
-		polygon.setAttribute("stroke", possibleColors[2]);
+		pattern.appendChild(image);
+		defs.appendChild(pattern);
+
+		// Use the unique pattern as fill
+		polygon.setAttribute("fill", `url(#${patternId})`);
+
+		// You might want to keep the stroke for definition, or remove it
+		polygon.setAttribute("stroke", "none");
 
 		svg.appendChild(polygon);
 	}
