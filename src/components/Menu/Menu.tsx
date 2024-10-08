@@ -1,7 +1,7 @@
 import css from "./Menu.module.css";
 import Button from "../Button/Button";
 import { MODES } from "../../config";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import {
 	clearPoints,
@@ -17,6 +17,7 @@ import {
 import { useState } from "react";
 import { VIEWS } from "../SvgCanvas/renderers";
 import { downloadSvgFile } from "../utils/svg";
+import type { RootState } from "../../store";
 
 const Menu = () => {
 	const [showControls, setShowControls] = useState(true);
@@ -38,19 +39,24 @@ const Controls = () => {
 	const dispatch = useDispatch();
 	const [saved, setSaved] = useState(false);
 
+	const view = useSelector<RootState, RootState["canvas"]["view"]>(
+		(state) => state.canvas.view,
+	);
+
+	const controls = [] as PanelButtonsConfig;
+
+	if (view === "gradient") {
+		// View specific controls
+	}
+
 	return (
 		<div className={css.inner}>
 			<Panel
 				title='Mode'
-				buttons={[
-					...MODES.map(({ name }) => ({
-						label: name,
-						onClick: () => dispatch(setMode(name)),
-					})),
-					{ label: "clear", onClick: () => dispatch(clearPoints()) },
-					{ label: "random", onClick: () => dispatch(generatePoints()) },
-					{ label: "clear", onClick: () => dispatch(clearPoints()) },
-				]}
+				buttons={MODES.map(({ name }) => ({
+					label: name,
+					onClick: () => dispatch(setMode(name)),
+				}))}
 			/>
 			<Panel
 				title='View'
@@ -58,6 +64,20 @@ const Controls = () => {
 					label: name,
 					onClick: () => dispatch(setView(name)),
 				}))}
+			/>
+			<Panel
+				title='Controls'
+				buttons={[
+					...controls,
+					{
+						label: "random",
+						onClick: () => dispatch(generatePoints()),
+					},
+					{
+						label: "clear",
+						onClick: () => dispatch(clearPoints()),
+					},
+				]}
 			/>
 			<Panel
 				title='Theme'
@@ -95,12 +115,14 @@ const Controls = () => {
 	);
 };
 
+type PanelButtonsConfig = Array<{ label: string; onClick: () => void }>;
+
 const Panel = ({
 	title,
 	buttons,
 }: {
 	title: string;
-	buttons: Array<{ label: string; onClick: () => void }>;
+	buttons: PanelButtonsConfig;
 }) => {
 	return (
 		<div className={css.panel}>

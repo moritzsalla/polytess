@@ -62,8 +62,6 @@ const SvgCanvas = forwardRef<SVGSVGElement, SvgCanvasProps>(
 				<svg
 					ref={mergeRefs(svgRef, forwardedRef)}
 					className={css.root}
-					width='100vw'
-					height='100vh'
 					onClick={handleCanvasEvent}
 					onPointerMove={(e) => {
 						// Only if mouse button is pressed

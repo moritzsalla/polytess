@@ -18,11 +18,11 @@
 .inner {
    overflow: auto;
    scroll-snap-type: x mandatory;
-   padding: 2rem;
+   padding: var(--contentPadding);
    display: grid;
    gap: 1rem;
    grid-template-columns: repeat(6, 1fr);
-   border-radius: 1rem;
+   border-radius: var(--borderRadius);
 }
 
 .panel {
@@ -45,5 +45,5 @@
    position: fixed;
    bottom: 0;
    right: 0;
-   padding: 2rem;
+   padding: var(--contentPadding);
 }

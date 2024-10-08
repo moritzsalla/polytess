@@ -1,23 +1,36 @@
 :root {
+	/* Colors */
 	--color-primary: black;
 	--color-secondary: white;
+	/* Easings */
 	--easeSnappy: cubic-bezier(0.87, 0, 0.13, 1);
 	--easeSmooth: cubic-bezier(0.45, 0.02, 0.09, 0.98);
+	/* Layout */
+	--contentPadding: 2rem;
+	--borderRadius: 1rem;
+}
+
+html {
+	/* BG *behind* body content */
+	background: var(--color-primary);
 }
 
 body {
-	margin: 0;
 	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto",
 		"Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans",
 		"Helvetica Neue", sans-serif;
+
+	/* Improved font rendering */
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
 
-	background: var(--color-primary);
-	color: var(--color-secondary);
+	/* Base font size for rem units */
 	font-size: 16px;
 
-	/* transition: background-color 0.25s ease-in-out, color 0.25s ease-in-out; */
+	/* Theme transition */
+	background: var(--color-primary);
+	color: var(--color-secondary);
+	transition: background-color 0.25s var(--easeSmooth), color 0.25s var(--easeSmooth);
 }
 
 * {
