@@ -7,7 +7,7 @@
    display: inline-block;
    text-align: center;
    width: fit-content;
-   transition: background-color 0.15s, transform 0.15s;
+   transition: background-color 0.15s var(--easeSmooth), scale 0.15s var(--easeSmooth);
    scale: 1;
    cursor: pointer;
 

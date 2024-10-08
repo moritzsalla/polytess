@@ -1,8 +1,7 @@
 import css from "./Menu.module.css";
 import Button from "../Button/Button";
 import { MODES } from "../../config";
-import { useDispatch, useSelector } from "react-redux";
-import type { RootState } from "../../store";
+import { useDispatch } from "react-redux";
 
 import {
 	clearPoints,
@@ -20,7 +19,7 @@ import { VIEWS } from "../SvgCanvas/renderers";
 import { downloadSvgFile } from "../utils/svg";
 
 const Menu = () => {
-	const [showControls, setShowControls] = useState(false);
+	const [showControls, setShowControls] = useState(true);
 
 	return (
 		<menu className={css.wrapper}>
