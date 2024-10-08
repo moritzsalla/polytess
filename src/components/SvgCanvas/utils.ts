@@ -36,60 +36,31 @@ const renderLinesView: Renderer = (points, delaunay, svg) => {
 	}
 };
 
-const renderShapesView: Renderer = (points, delaunay, svg) => {
-	// Create a defs element to hold our patterns
-	const defs = document.createElementNS("http://www.w3.org/2000/svg", "defs");
-	svg.appendChild(defs);
-
-	// Draw triangles
+const renderVertexView: Renderer = (points, delaunay, svg) => {
+	// Create shapes
 	for (let i = 0; i < delaunay.triangles.length; i += 3) {
 		const p1 = delaunay.triangles[i];
 		const p2 = delaunay.triangles[i + 1];
 		const p3 = delaunay.triangles[i + 2];
 
-		const polygon = document.createElementNS(
+		// Calculate center point of triangle
+		const centerX = (points[p1][0] + points[p2][0] + points[p3][0]) / 3;
+		const centerY = (points[p1][1] + points[p2][1] + points[p3][1]) / 3;
+
+		// Create ellipse instead of polygon
+		const circle = document.createElementNS(
 			"http://www.w3.org/2000/svg",
-			"polygon",
+			"circle",
 		);
 
-		// Improve AA
-		polygon.setAttribute("shape-rendering", SHAPE_RENDERING);
+		circle.setAttribute("cx", centerX.toString());
+		circle.setAttribute("cy", centerY.toString());
+		circle.setAttribute("r", "1");
 
-		polygon.setAttribute(
-			"points",
-			`${points[p1][0]},${points[p1][1]} ${points[p2][0]},${points[p2][1]} ${points[p3][0]},${points[p3][1]}`,
-		);
+		// Randomly select color from palette
+		circle.setAttribute("fill", "currentColor");
 
-		// Create a unique pattern for this polygon
-		const patternId = `imagePattern${i}`;
-		const pattern = document.createElementNS(
-			"http://www.w3.org/2000/svg",
-			"pattern",
-		);
-		pattern.setAttribute("id", patternId);
-		pattern.setAttribute("patternUnits", "userSpaceOnUse");
-		pattern.setAttribute("width", "100%");
-		pattern.setAttribute("height", "100%");
-
-		const image = document.createElementNS(
-			"http://www.w3.org/2000/svg",
-			"image",
-		);
-		image.setAttribute("href", "logo192.png");
-		image.setAttribute("width", "100%");
-		image.setAttribute("height", "100%");
-		image.setAttribute("preserveAspectRatio", "xMidYMid slice");
-
-		pattern.appendChild(image);
-		defs.appendChild(pattern);
-
-		// Use the unique pattern as fill
-		polygon.setAttribute("fill", `url(#${patternId})`);
-
-		// You might want to keep the stroke for definition, or remove it
-		polygon.setAttribute("stroke", "none");
-
-		svg.appendChild(polygon);
+		svg.appendChild(circle);
 	}
 };
 
@@ -160,17 +131,12 @@ const renderGradientView: Renderer = (points, delaunay, svg) => {
 	}
 };
 
-const renderImageTraceView: Renderer = (points, delaunay, svg) => {
-	throw new Error("Not implemented");
-};
-
 const VIEW_RENDERERS: {
 	[K in View]: Renderer;
 } = {
 	lines: renderLinesView,
-	shapes: renderShapesView,
+	vertex: renderVertexView,
 	gradient: renderGradientView,
-	imageTrace: renderImageTraceView,
 };
 
 export const generateView = (

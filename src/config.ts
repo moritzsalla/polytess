@@ -2,9 +2,8 @@ export const MODES = [{ name: "draw" }, { name: "erase" }] as const;
 
 export const VIEWS = [
 	{ name: "lines" },
-	{ name: "shapes" },
 	{ name: "gradient" },
-	{ name: "imageTrace" },
+	{ name: "vertex" },
 ] as const;
 
 export type Mode = (typeof MODES)[number]["name"];
