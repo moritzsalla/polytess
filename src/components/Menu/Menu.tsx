@@ -7,11 +7,15 @@ import { downloadSvgFile } from "../../utils";
 import {
 	clearPoints,
 	generatePoints,
-	saveToLocalStorage,
+	saveToLocalStorage as canvasSaveToLocalStorage,
 	setMode,
 	setView,
 } from "../../store/canvasSlice";
-import { invertTheme } from "../../store/themeSlice";
+import {
+	invertTheme,
+	saveToLocalStorage as themeSaveToLocalStorage,
+} from "../../store/themeSlice";
+import { useState } from "react";
 
 const Menu = () => {
 	return (
@@ -88,6 +92,7 @@ const ViewPanel = () => {
 
 const ExportPanel = () => {
 	const dispatch = useDispatch();
+	const [clicked, setClicked] = useState(false);
 
 	const handleExportSVG = () => {
 		const svgElement = document.querySelector("svg");
@@ -99,7 +104,19 @@ const ExportPanel = () => {
 	return (
 		<div className={css.panel}>
 			<div>
-				<Button onClick={() => dispatch(saveToLocalStorage())}>Save</Button>
+				<Button
+					onClick={() => {
+						// Save current state of program to localhost
+						// to persist changes between page reloads.
+						dispatch(themeSaveToLocalStorage());
+						dispatch(canvasSaveToLocalStorage());
+						// Show "Saved!" for 2 seconds
+						setClicked(true);
+						setTimeout(() => setClicked(false), 2000);
+					}}
+				>
+					{clicked ? "Saved!" : "Save"}
+				</Button>
 			</div>
 			<div>
 				<h2>Export</h2>

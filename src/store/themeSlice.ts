@@ -29,19 +29,26 @@ const initialState: ThemeState = {
 	value: getInitialTheme(),
 };
 
+// Save program to localhost
+// (changes will persist between page reloads)
+const saveToLocalStorageAction = (state: ThemeState) => {
+	// Save program snapshot to local storage
+	localStorage.setItem(STORAGE_KEYS.THEME, state.value);
+};
+
 const themeSlice = createSlice({
 	name: "theme",
 	initialState,
 	reducers: {
 		invertTheme: (state) => {
 			state.value = state.value === "light" ? "dark" : "light";
-			localStorage.setItem(STORAGE_KEYS.THEME, state.value);
 			applyTheme(state.value);
 		},
+		saveToLocalStorage: saveToLocalStorageAction,
 	},
 });
 
-export const { invertTheme } = themeSlice.actions;
+export const { invertTheme, saveToLocalStorage } = themeSlice.actions;
 
 export default themeSlice.reducer;
 

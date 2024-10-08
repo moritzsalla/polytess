@@ -10,11 +10,13 @@ export const VIEWS = [
 export type Mode = (typeof MODES)[number]["name"];
 export type View = (typeof VIEWS)[number]["name"];
 
+const LOCAL_STORAGE_PREFIX = "svg-drawing-";
+
 export const STORAGE_KEYS = {
-	VIEW: "view",
-	POINTS: "points",
-	MODE: "mode",
-	THEME: "theme",
-} as const;
+	VIEW: "svg-drawing-view",
+	POINTS: "svg-drawing-points",
+	MODE: "svg-drawing-mode",
+	THEME: "svg-drawing-theme",
+} as const satisfies Record<string, `${typeof LOCAL_STORAGE_PREFIX}${string}`>;
 
 export const ERASE_MODE_RADIUS = 60;
