@@ -1,13 +1,6 @@
 export const MODES = [{ name: "draw" }, { name: "erase" }] as const;
 
-export const VIEWS = [
-	{ name: "lines" },
-	{ name: "gradient" },
-	{ name: "vertex" },
-] as const;
-
 export type Mode = (typeof MODES)[number]["name"];
-export type View = (typeof VIEWS)[number]["name"];
 
 const LOCAL_STORAGE_PREFIX = "svg-drawing-";
 

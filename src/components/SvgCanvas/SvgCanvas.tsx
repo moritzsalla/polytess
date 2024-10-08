@@ -1,16 +1,16 @@
 import css from "./SvgCanvas.module.css";
 import React, { forwardRef, useEffect, useRef } from "react";
-import { generateView } from "./utils";
+import { generateView } from "./renderers";
 
 import SvgCanvasCustomCursor from "./SvgCanvasCustomCursor";
-import { mergeRefs } from "../../utils";
+
 import Delaunator from "../../lib/delaunator";
 import { addPoint, erasePoints } from "../../store/canvasSlice";
 import { ERASE_MODE_RADIUS } from "../../config";
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "../../store";
+import { mergeRefs } from "../utils/react";
 
-export type Points = Array<[number, number]>;
 export type OnClickFn = React.SVGProps<SVGSVGElement>["onClick"];
 export type OnDragFn = React.SVGProps<SVGSVGElement>["onPointerMove"];
 

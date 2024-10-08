@@ -1,9 +1,9 @@
 import css from "./Menu.module.css";
 import Button from "../Button/Button";
-import { MODES, VIEWS } from "../../config";
+import { MODES } from "../../config";
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "../../store";
-import { downloadSvgFile } from "../../utils";
+
 import {
 	clearPoints,
 	generatePoints,
@@ -16,6 +16,8 @@ import {
 	saveToLocalStorage as themeSaveToLocalStorage,
 } from "../../store/themeSlice";
 import { useState } from "react";
+import { VIEWS } from "../SvgCanvas/renderers";
+import { downloadSvgFile } from "../utils/svg";
 
 const Menu = () => {
 	return (

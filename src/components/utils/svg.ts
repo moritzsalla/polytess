@@ -1,4 +1,16 @@
-import type { Points } from "./components/SvgCanvas/SvgCanvas";
+import type { Points } from "../SvgCanvas/renderers";
+
+export const calculateBoundingBox = (
+	p1: number[],
+	p2: number[],
+	p3: number[],
+): [number, number, number, number] => {
+	const minX = Math.min(p1[0], p2[0], p3[0]);
+	const minY = Math.min(p1[1], p2[1], p3[1]);
+	const maxX = Math.max(p1[0], p2[0], p3[0]);
+	const maxY = Math.max(p1[1], p2[1], p3[1]);
+	return [minX, minY, maxX - minX, maxY - minY];
+};
 
 export const generateCirclePoints = (
 	centerX: number,
@@ -86,17 +98,3 @@ export const downloadSvgFile = (svg: SVGSVGElement, filename: string) => {
 	// Clean up the URL object
 	URL.revokeObjectURL(svgUrl);
 };
-
-export const mergeRefs =
-	<T extends any>(
-		...refs: Array<React.Ref<T> | undefined>
-	): React.RefCallback<T> =>
-	(value) => {
-		refs.forEach((ref) => {
-			if (typeof ref === "function") {
-				ref(value);
-			} else if (ref) {
-				(ref as React.MutableRefObject<T | null>).current = value;
-			}
-		});
-	};

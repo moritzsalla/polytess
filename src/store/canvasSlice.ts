@@ -1,8 +1,8 @@
 // src/store/canvasSlice.ts
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
-import { STORAGE_KEYS, type Mode, type View } from "../config";
-import { generateRandomPoints } from "../utils";
-import type { Points } from "../components/SvgCanvas/SvgCanvas";
+import { STORAGE_KEYS, type Mode } from "../config";
+import type { View, Points } from "../components/SvgCanvas/renderers";
+import { generateRandomPoints } from "../components/utils/svg";
 
 type CanvasState = {
 	mode: Mode;

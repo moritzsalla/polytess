@@ -1,6 +1,15 @@
 import type Delaunator from "delaunator";
-import type { Points } from "./SvgCanvas";
-import type { View } from "../../config";
+import { calculateBoundingBox } from "../utils/svg";
+
+export const VIEWS = [
+	{ name: "lines" },
+	{ name: "gradient" },
+	{ name: "vertex" },
+	{ name: "pattern" },
+] as const;
+
+export type View = (typeof VIEWS)[number]["name"];
+export type Points = Array<[number, number]>;
 
 type Renderer = (
 	points: Points,
@@ -8,9 +17,7 @@ type Renderer = (
 	svg: SVGElement,
 ) => void;
 
-const SHAPE_RENDERING = "auto";
-
-const renderLinesView: Renderer = (points, delaunay, svg) => {
+const lines: Renderer = (points, delaunay, svg) => {
 	// Draw triangles
 	for (let i = 0; i < delaunay.triangles.length; i += 3) {
 		const p1 = delaunay.triangles[i];
@@ -22,9 +29,7 @@ const renderLinesView: Renderer = (points, delaunay, svg) => {
 			"polygon",
 		);
 
-		// Improve AA
-		polygon.setAttribute("shape-rendering", SHAPE_RENDERING);
-
+		polygon.setAttribute("shape-rendering", "auto");
 		polygon.setAttribute(
 			"points",
 			`${points[p1][0]},${points[p1][1]} ${points[p2][0]},${points[p2][1]} ${points[p3][0]},${points[p3][1]}`,
@@ -36,7 +41,7 @@ const renderLinesView: Renderer = (points, delaunay, svg) => {
 	}
 };
 
-const renderVertexView: Renderer = (points, delaunay, svg) => {
+const vertex: Renderer = (points, delaunay, svg) => {
 	// Create shapes
 	for (let i = 0; i < delaunay.triangles.length; i += 3) {
 		const p1 = delaunay.triangles[i];
@@ -64,7 +69,7 @@ const renderVertexView: Renderer = (points, delaunay, svg) => {
 	}
 };
 
-const renderGradientView: Renderer = (points, delaunay, svg) => {
+const gradient: Renderer = (points, delaunay, svg) => {
 	// Create a <defs> section if it doesn't exist
 	let defs = svg.querySelector("defs");
 	if (!defs) {
@@ -84,8 +89,7 @@ const renderGradientView: Renderer = (points, delaunay, svg) => {
 		);
 
 		// Improve AA
-		polygon.setAttribute("shape-rendering", SHAPE_RENDERING);
-
+		polygon.setAttribute("shape-rendering", "auto");
 		polygon.setAttribute(
 			"points",
 			`${points[p1][0]},${points[p1][1]} ${points[p2][0]},${points[p2][1]} ${points[p3][0]},${points[p3][1]}`,
@@ -131,12 +135,76 @@ const renderGradientView: Renderer = (points, delaunay, svg) => {
 	}
 };
 
+const pattern: Renderer = (points, delaunay, svg) => {
+	// Create defs element if it doesn't exist
+	let defs = svg.querySelector("defs");
+	if (!defs) {
+		defs = document.createElementNS("http://www.w3.org/2000/svg", "defs");
+		svg.insertBefore(defs, svg.firstChild);
+	}
+
+	// Create shapes
+	for (let i = 0; i < delaunay.triangles.length; i += 3) {
+		const p1 = delaunay.triangles[i];
+		const p2 = delaunay.triangles[i + 1];
+		const p3 = delaunay.triangles[i + 2];
+
+		// Create a unique pattern for this polygon
+		const patternId = `image-pattern-${i}`;
+		const pattern = document.createElementNS(
+			"http://www.w3.org/2000/svg",
+			"pattern",
+		);
+		pattern.setAttribute("id", patternId);
+		pattern.setAttribute("patternUnits", "userSpaceOnUse");
+		pattern.setAttribute("width", "100%");
+		pattern.setAttribute("height", "100%");
+
+		// Create image element
+		const image = document.createElementNS(
+			"http://www.w3.org/2000/svg",
+			"image",
+		);
+		image.setAttribute("href", "/gradient.png");
+		image.setAttribute("width", "100%");
+		image.setAttribute("height", "100%");
+		image.setAttribute("preserveAspectRatio", "xMidYMid slice");
+
+		// Append image to pattern, and pattern to defs
+		pattern.appendChild(image);
+		defs.appendChild(pattern);
+
+		// Create polygon
+		const polygon = document.createElementNS(
+			"http://www.w3.org/2000/svg",
+			"polygon",
+		);
+
+		const pointsAttr = `${points[p1][0]},${points[p1][1]} ${points[p2][0]},${points[p2][1]} ${points[p3][0]},${points[p3][1]}`;
+		polygon.setAttribute("points", pointsAttr);
+
+		// Set fill to use this specific image pattern
+		polygon.setAttribute("fill", `url(#${patternId})`);
+
+		// Set the pattern's viewBox to match the polygon's bounding box
+		const [minX, minY, width, height] = calculateBoundingBox(
+			points[p1],
+			points[p2],
+			points[p3],
+		);
+		pattern.setAttribute("viewBox", `${minX} ${minY} ${width} ${height}`);
+
+		svg.appendChild(polygon);
+	}
+};
+
 const VIEW_RENDERERS: {
 	[K in View]: Renderer;
 } = {
-	lines: renderLinesView,
-	vertex: renderVertexView,
-	gradient: renderGradientView,
+	lines,
+	vertex,
+	gradient,
+	pattern,
 };
 
 export const generateView = (
@@ -145,10 +213,11 @@ export const generateView = (
 	points: Points,
 	delaunay: Delaunator<number[]>,
 ) => {
-	// Clear the SVG element
-	svgElem.innerHTML = "";
+	svgElem.innerHTML = ""; // Clear the SVG element
 
-	// Call the appropriate renderer
-	const renderer = VIEW_RENDERERS[view];
+	const renderer = VIEW_RENDERERS[view]; // Call the appropriate renderer
+	if (!renderer) {
+		throw new Error(`Unknown view: ${view}`);
+	}
 	renderer(points, delaunay, svgElem);
 };
