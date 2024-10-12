@@ -7,7 +7,7 @@
 }
 
 .customCursor {
-   display: block;
+   display: none;
    border-radius: 50%;
    border: 1px solid var(--color-secondary);
    position: fixed;

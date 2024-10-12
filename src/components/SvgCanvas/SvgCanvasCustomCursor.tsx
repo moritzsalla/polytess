@@ -25,6 +25,7 @@ const EraseCursor = ({ mode, svgRef }: SvgCanvasCustomCursorProps) => {
 	useMove(
 		({ xy: [x, y] }) => {
 			if (!cursorRef.current) return;
+			cursorRef.current.style.display = "block"; // Prevent cursor from showing up at 0,0
 			cursorRef.current.style.left = `${x}px`;
 			cursorRef.current.style.top = `${y}px`;
 		},
