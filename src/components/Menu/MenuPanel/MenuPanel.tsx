@@ -1,31 +1,33 @@
-import Button, { type ButtonProps } from "../../Button/Button";
-import InputFile, { type InputFileProps } from "../../InputFile/InputFile";
-import Range, { type RangeProps } from "../../Range/Range";
+import { lazy, Suspense } from "react";
+import type { ButtonProps } from "../../Button/Button";
 import css from "./MenuPanel.module.css";
 
-const adaptButton = ({
-	label,
-	...rest
-}: Omit<ButtonProps, "children"> & {
-	label: string;
-}) => <Button {...rest}>{label}</Button>;
-
-const adaptColor = ({
-	value,
-	onChange,
-}: React.InputHTMLAttributes<HTMLInputElement>) => (
-	<input type='color' value={value} onChange={onChange} />
-);
+const Button = lazy(() => import("../../Button/Button"));
+const Range = lazy(() => import("../../Range/Range"));
+const InputFile = lazy(() => import("../../InputFile/InputFile"));
 
 const PANEL_INPUTS = {
-	button: adaptButton,
-	color: adaptColor,
-	file: (props: InputFileProps) => <InputFile {...props} />,
-	range: (props: RangeProps) => <Range {...props} />,
+	button: ({
+		label,
+		...rest
+	}: Omit<ButtonProps, "children"> & {
+		label: string;
+	}) => {
+		return <Button {...rest}>{label}</Button>;
+	},
+
+	color: ({
+		value,
+		onChange,
+	}: React.InputHTMLAttributes<HTMLInputElement>) => {
+		return <input type='color' value={value} onChange={onChange} />;
+	},
+
+	file: InputFile,
+	range: Range,
 } as const;
 
 type PanelInputType = keyof typeof PANEL_INPUTS;
-
 type InputConfig = {
 	[K in PanelInputType]: {
 		type: K;
@@ -53,7 +55,11 @@ const MenuPanel = ({ title, inputs }: MenuPanelProps) => {
 					// limitations with object accessors.
 
 					const { type, ...props } = input;
-					return <InputEl key={`input-${type}_${index}`} {...props} />;
+					return (
+						<Suspense>
+							<InputEl key={`input-${type}_${index}`} {...props} />
+						</Suspense>
+					);
 				})}
 			</div>
 		</div>

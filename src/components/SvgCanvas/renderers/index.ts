@@ -1,49 +1,46 @@
 import type Delaunator from "delaunator";
-import type { View } from "../../../config/views";
+import type { CanvasState } from "../../../store/canvasSlice";
 import { linesRenderer } from "./linesRenderer";
 import { vertexRenderer } from "./vertexRenderer";
 import { gradientRenderer } from "./gradientRenderer";
-import { patternRenderer } from "./patternRenderer";
 import { imageRenderer } from "./imageRenderer";
 
 export type Points = Array<[number, number]>;
 
 export type ViewRenderer = (
-	points: Points,
+	svgElem: SVGGElement,
 	delaunay: Delaunator<number[]>,
-	svgElem: SVGElement,
-	gradientStartColor: string,
-	gradientEndColor: string,
+	canvas: CanvasState,
 ) => void;
 
 type ViewRenderers = {
-	[K in View]: ViewRenderer;
+	[key: string]: ViewRenderer;
 };
 
-const VIEW_RENDERERS: ViewRenderers = {
+const VIEW_RENDERERS = {
 	lines: linesRenderer,
 	vertex: vertexRenderer,
 	gradient: gradientRenderer,
-	pattern: patternRenderer,
 	image: imageRenderer,
-};
+} as const satisfies ViewRenderers;
+
+export type View = keyof typeof VIEW_RENDERERS;
+
+export const VIEWS = Object.keys(VIEW_RENDERERS) as Array<View>;
 
 export const generateView = (
-	view: View,
 	svgElem: SVGGElement,
-	points: Points,
 	delaunay: Delaunator<number[]>,
-	gradientStartColor: string,
-	gradientEndColor: string,
+	canvas: CanvasState,
 ) => {
 	// Clear the SVG element
 	svgElem.innerHTML = "";
 
 	// Call the appropriate renderer
-	const renderer = VIEW_RENDERERS[view];
+	const renderer = VIEW_RENDERERS[canvas.view];
 	if (!renderer) {
-		throw new Error(`Unknown view: ${view}`);
+		throw new Error(`Unknown view: ${canvas.view}`);
 	}
 
-	renderer(points, delaunay, svgElem, gradientStartColor, gradientEndColor);
+	renderer(svgElem, delaunay, canvas);
 };

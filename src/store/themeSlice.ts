@@ -2,10 +2,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { LOCAL_STORAGE_KEYS } from "../config/local-storage";
 
-type ThemeState = {
+export type ThemeState = {
 	value: "light" | "dark";
-	gradientStartColor: string;
-	gradientEndColor: string;
 };
 
 type ThemeValue = ThemeState["value"];
@@ -25,47 +23,24 @@ const getInitialTheme = (): ThemeValue => {
 	const storedTheme = localStorage.getItem(
 		LOCAL_STORAGE_KEYS.THEME,
 	) as ThemeValue;
-	return storedTheme || "light";
+
+	return storedTheme ?? "light";
+};
+
+// Save program to local storage
+// (changes will persist between page reloads)
+const saveToLocalStorage = (state: ThemeState) => {
+	// Save program snapshot to local storage
+	localStorage.setItem(LOCAL_STORAGE_KEYS.THEME, state.value);
 };
 
 const initialState: ThemeState = {
 	value: getInitialTheme(),
-	gradientStartColor: "red",
-	gradientEndColor: "blue",
 };
 
 const invertTheme = (state: ThemeState) => {
 	state.value = state.value === "light" ? "dark" : "light";
 	applyTheme(state.value);
-};
-
-// Save program to localhost
-// (changes will persist between page reloads)
-const saveToLocalStorage = (state: ThemeState) => {
-	// Save program snapshot to local storage
-	localStorage.setItem(LOCAL_STORAGE_KEYS.THEME, state.value);
-	localStorage.setItem(
-		LOCAL_STORAGE_KEYS.GRADIENT_COLOR_START,
-		state.gradientStartColor,
-	);
-	localStorage.setItem(
-		LOCAL_STORAGE_KEYS.GRADIENT_COLOR_END,
-		state.gradientEndColor,
-	);
-};
-
-const setGradientStartColor = (
-	state: ThemeState,
-	action: { payload: string },
-) => {
-	state.gradientStartColor = action.payload;
-};
-
-const setGradientEndColor = (
-	state: ThemeState,
-	action: { payload: string },
-) => {
-	state.gradientEndColor = action.payload;
 };
 
 const themeSlice = createSlice({
@@ -74,8 +49,6 @@ const themeSlice = createSlice({
 	reducers: {
 		invertTheme,
 		saveToLocalStorage,
-		setGradientStartColor,
-		setGradientEndColor,
 	},
 });
 

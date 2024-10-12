@@ -1,45 +1,80 @@
 // src/store/canvasSlice.ts
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
-import type { Points } from "../components/SvgCanvas/renderers";
+import type { Points, View } from "../components/SvgCanvas/renderers";
 import { generateRandomPoints } from "../utils/svg";
 import type { Mode } from "../config/modes";
 import { LOCAL_STORAGE_KEYS } from "../config/local-storage";
-import type { View } from "../config/views";
 
-type CanvasState = {
+export type CanvasState = {
 	mode: Mode;
 	view: View;
 	points: Points;
 	maxEdgeLength: number;
+	gradient: {
+		startColor: string;
+		endColor: string;
+	};
 };
 
 const getInitialState = (): CanvasState => {
 	const mode =
-		(localStorage.getItem(LOCAL_STORAGE_KEYS.MODE) as Mode) || "draw";
+		(localStorage.getItem(LOCAL_STORAGE_KEYS.MODE) as Mode) ?? "draw";
 	const view =
-		(localStorage.getItem(LOCAL_STORAGE_KEYS.VIEW) as View) || "gradient";
+		(localStorage.getItem(LOCAL_STORAGE_KEYS.VIEW) as View) ?? "gradient";
 	const points = JSON.parse(
-		localStorage.getItem(LOCAL_STORAGE_KEYS.POINTS) || "[]",
+		localStorage.getItem(LOCAL_STORAGE_KEYS.POINTS) ?? "[]",
 	);
 	const maxEdgeLength = parseInt(
-		localStorage.getItem(LOCAL_STORAGE_KEYS.MAX_EDGE_LENGTH) || "500",
+		localStorage.getItem(LOCAL_STORAGE_KEYS.MAX_EDGE_LENGTH) ?? "500",
 	);
+	// Default colors must be in hex format: #RRGGBB
+	const startColor =
+		localStorage.getItem(LOCAL_STORAGE_KEYS.GRADIENT_COLOR_START) ??
+		"#ff0000";
+	const endColor =
+		localStorage.getItem(LOCAL_STORAGE_KEYS.GRADIENT_COLOR_END) ?? "#0000ff";
 
 	return {
 		mode,
 		view,
 		points,
 		maxEdgeLength,
+		gradient: {
+			startColor,
+			endColor,
+		},
 	};
 };
 
+// Save program to local storage
+// (changes will persist between page reloads)
+const saveToLocalStorage = (state: CanvasState) => {
+	// Save program snapshot to local storage
+	localStorage.setItem(
+		LOCAL_STORAGE_KEYS.POINTS,
+		JSON.stringify(state.points),
+	);
+	localStorage.setItem(LOCAL_STORAGE_KEYS.VIEW, state.view);
+	localStorage.setItem(LOCAL_STORAGE_KEYS.MODE, state.mode);
+	localStorage.setItem(
+		LOCAL_STORAGE_KEYS.MAX_EDGE_LENGTH,
+		state.maxEdgeLength.toString(),
+	);
+	localStorage.setItem(
+		LOCAL_STORAGE_KEYS.GRADIENT_COLOR_START,
+		state.gradient.startColor,
+	);
+	localStorage.setItem(
+		LOCAL_STORAGE_KEYS.GRADIENT_COLOR_END,
+		state.gradient.endColor,
+	);
+};
+
 const setMode = (state: CanvasState, action: PayloadAction<Mode>) => {
-	// Update mode
 	state.mode = action.payload;
 };
 
 const setView = (state: CanvasState, action: PayloadAction<View>) => {
-	// Update view
 	state.view = action.payload;
 };
 
@@ -72,22 +107,6 @@ const clearPoints = (state: CanvasState) => {
 const randomize = (state: CanvasState) => {
 	// Generate random points
 	state.points = generateRandomPoints();
-};
-
-// Save program to localhost
-// (changes will persist between page reloads)
-const saveToLocalStorage = (state: CanvasState) => {
-	// Save program snapshot to local storage
-	localStorage.setItem(
-		LOCAL_STORAGE_KEYS.POINTS,
-		JSON.stringify(state.points),
-	);
-	localStorage.setItem(LOCAL_STORAGE_KEYS.VIEW, state.view);
-	localStorage.setItem(LOCAL_STORAGE_KEYS.MODE, state.mode);
-	localStorage.setItem(
-		LOCAL_STORAGE_KEYS.MAX_EDGE_LENGTH,
-		state.maxEdgeLength.toString(),
-	);
 };
 
 const readImage = (state: CanvasState, action: PayloadAction<string>) => {
@@ -129,6 +148,20 @@ const setMaxEdgeLength = (
 	state.maxEdgeLength = action.payload;
 };
 
+const setGradientStartColor = (
+	state: CanvasState,
+	action: PayloadAction<string>,
+) => {
+	state.gradient.startColor = action.payload;
+};
+
+const setGradientEndColor = (
+	state: CanvasState,
+	action: PayloadAction<string>,
+) => {
+	state.gradient.endColor = action.payload;
+};
+
 const canvasSlice = createSlice({
 	name: "canvas",
 	initialState: getInitialState(),
@@ -142,6 +175,8 @@ const canvasSlice = createSlice({
 		setMaxEdgeLength,
 		setMode,
 		setView,
+		setGradientStartColor,
+		setGradientEndColor,
 	},
 });
 

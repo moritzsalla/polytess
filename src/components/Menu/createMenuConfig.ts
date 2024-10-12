@@ -1,31 +1,29 @@
 import type { Dispatch, UnknownAction } from "@reduxjs/toolkit";
-import { VIEWS, type View } from "../../config/views";
 import type { InputsConfig } from "./MenuPanel/MenuPanel";
 import { MODES } from "../../config/modes";
-import { canvasActions } from "../../store/canvasSlice";
+import { canvasActions, type CanvasState } from "../../store/canvasSlice";
 import { themeActions } from "../../store/themeSlice";
 import { downloadSvgFile } from "../../utils/svg";
+import { VIEWS } from "../SvgCanvas/renderers";
 
 type PanelMap = Record<string, InputsConfig>;
 type CreateMenuConfig = (
-	view: View,
+	canvas: CanvasState,
 	dispatch: Dispatch<UnknownAction>,
 	isSaved: boolean,
 	setIsSaved: (value: boolean) => void,
 	maxEdgeLength: number,
-	gradientStartColor: string,
-	gradientEndColor: string,
 ) => PanelMap;
 
 export const createMenuConfig: CreateMenuConfig = (
-	view,
+	canvas,
 	dispatch,
 	isSaved,
 	setIsSaved,
 	maxEdgeLength,
-	gradientStartColor,
-	gradientEndColor,
 ) => {
+	const { view, gradient } = canvas;
+
 	const baseConfig: PanelMap = {
 		Mode: MODES.map(({ name }) => ({
 			type: "button",
@@ -33,10 +31,10 @@ export const createMenuConfig: CreateMenuConfig = (
 			onClick: () => dispatch(canvasActions.setMode(name)),
 		})),
 
-		View: VIEWS.map(({ name }) => ({
+		View: VIEWS.map((view) => ({
 			type: "button",
-			label: name,
-			onClick: () => dispatch(canvasActions.setView(name)),
+			label: view,
+			onClick: () => dispatch(canvasActions.setView(view)),
 		})),
 
 		Controls: [
@@ -115,16 +113,16 @@ export const createMenuConfig: CreateMenuConfig = (
 		baseConfig.Controls.unshift({
 			type: "color",
 			// label: "start color",
-			value: gradientStartColor,
+			value: gradient.startColor,
 			onChange: (e) =>
-				dispatch(themeActions.setGradientStartColor(e.target.value)),
+				dispatch(canvasActions.setGradientStartColor(e.target.value)),
 		});
 		baseConfig.Controls.unshift({
 			type: "color",
 			// label: "end color",
-			value: gradientEndColor,
+			value: gradient.endColor,
 			onChange: (e) =>
-				dispatch(themeActions.setGradientEndColor(e.target.value)),
+				dispatch(canvasActions.setGradientEndColor(e.target.value)),
 		});
 	}
 

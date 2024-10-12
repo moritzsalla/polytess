@@ -5,23 +5,15 @@ import { useState, useMemo } from "react";
 import type { RootState } from "../../store";
 import MenuPanel from "./MenuPanel/MenuPanel";
 import { createMenuConfig } from "./createMenuConfig";
+import type { CanvasState } from "../../store/canvasSlice";
 
 const Menu = () => {
 	const [showControls, setShowControls] = useState(true);
 	const [isSaved, setIsSaved] = useState(false);
 
 	const dispatch = useDispatch();
-	const gradientStartColor = useSelector<
-		RootState,
-		RootState["theme"]["gradientStartColor"]
-	>((state) => state.theme.gradientStartColor);
-	const gradientEndColor = useSelector<
-		RootState,
-		RootState["theme"]["gradientEndColor"]
-	>((state) => state.theme.gradientEndColor);
-	const view = useSelector<RootState, RootState["canvas"]["view"]>(
-		(state) => state.canvas.view,
-	);
+
+	const canvas = useSelector<RootState, CanvasState>((state) => state.canvas);
 	const maxEdgeLength = useSelector<
 		RootState,
 		RootState["canvas"]["maxEdgeLength"]
@@ -29,23 +21,8 @@ const Menu = () => {
 
 	const menuConfig = useMemo(
 		() =>
-			createMenuConfig(
-				view,
-				dispatch,
-				isSaved,
-				setIsSaved,
-				maxEdgeLength,
-				gradientStartColor,
-				gradientEndColor,
-			),
-		[
-			dispatch,
-			view,
-			isSaved,
-			maxEdgeLength,
-			gradientStartColor,
-			gradientEndColor,
-		],
+			createMenuConfig(canvas, dispatch, isSaved, setIsSaved, maxEdgeLength),
+		[canvas, dispatch, isSaved, maxEdgeLength],
 	);
 
 	return (

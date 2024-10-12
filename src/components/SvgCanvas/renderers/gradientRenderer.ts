@@ -3,13 +3,9 @@ import type { ViewRenderer } from ".";
 export const GRADIENT_COLOR_START = "--gradient-start";
 export const GRADIENT_COLOR_END = "--gradient-end";
 
-export const gradientRenderer: ViewRenderer = (
-	points,
-	delaunay,
-	svgElem,
-	gradientStartColor,
-	gradientEndColor,
-) => {
+export const gradientRenderer: ViewRenderer = (svgElem, delaunay, canvas) => {
+	const { points } = canvas;
+
 	// Create a <defs> section if it doesn't exist
 	let defs = svgElem.querySelector("defs");
 	if (!defs) {
@@ -30,6 +26,7 @@ export const gradientRenderer: ViewRenderer = (
 
 		// Improve AA
 		polygon.setAttribute("shape-rendering", "auto");
+
 		polygon.setAttribute(
 			"points",
 			`${points[p1][0]},${points[p1][1]} ${points[p2][0]},${points[p2][1]} ${points[p3][0]},${points[p3][1]}`,
@@ -51,8 +48,8 @@ export const gradientRenderer: ViewRenderer = (
 
 		// Create gradient stops
 		const stops = [
-			{ offset: "0%", color: gradientStartColor },
-			{ offset: "100%", color: gradientEndColor },
+			{ offset: "0%", color: canvas.gradient.startColor },
+			{ offset: "100%", color: canvas.gradient.endColor },
 		];
 
 		stops.forEach((stop) => {

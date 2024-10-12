@@ -1,7 +1,9 @@
 import type { ViewRenderer } from ".";
 import { calculateBoundingBox } from "../../../utils/svg";
 
-export const patternRenderer: ViewRenderer = (points, delaunay, svgElem) => {
+export const patternRenderer: ViewRenderer = (svgElem, delaunay, canvas) => {
+	const { points } = canvas;
+
 	// Create defs element if it doesn't exist
 	let defs = svgElem.querySelector("defs");
 	if (!defs) {

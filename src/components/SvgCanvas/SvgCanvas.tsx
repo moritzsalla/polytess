@@ -19,18 +19,11 @@ const SvgCanvas = () => {
 	const svgRef = useRef<React.ElementRef<"svg">>(null);
 
 	const dispatch = useDispatch();
-	const { mode, view, points, maxEdgeLength } = useSelector<
-		RootState,
-		RootState["canvas"]
-	>((state) => state.canvas);
-	const gradientStartColor = useSelector<
-		RootState,
-		RootState["theme"]["gradientStartColor"]
-	>((state) => state.theme.gradientStartColor);
-	const gradientEndColor = useSelector<
-		RootState,
-		RootState["theme"]["gradientEndColor"]
-	>((state) => state.theme.gradientEndColor);
+	const canvas = useSelector<RootState, RootState["canvas"]>(
+		(state) => state.canvas,
+	);
+
+	const { mode, view, points, maxEdgeLength } = canvas;
 
 	// Effect for updating SVG content outside of React.
 	// This approach bypasses React's virtual DOM for performance reasons.
@@ -45,15 +38,8 @@ const SvgCanvas = () => {
 		// This is done outside React's state management for better performance
 		const delaunay = new Delaunator(points.flat(), maxEdgeLength);
 		// Generate view based on delaunay triangulation result (points).
-		generateView(
-			view,
-			svgElem,
-			points,
-			delaunay,
-			gradientStartColor,
-			gradientEndColor,
-		);
-	}, [points, view, maxEdgeLength, gradientStartColor, gradientEndColor]);
+		generateView(svgElem, delaunay, canvas);
+	}, [points, view, maxEdgeLength, canvas]);
 
 	// Handler for both click and drag events
 	const handleCanvasEvent = (

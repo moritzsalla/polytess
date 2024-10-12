@@ -1,6 +1,8 @@
 import type { ViewRenderer } from ".";
 
-export const linesRenderer: ViewRenderer = (points, delaunay, svgElem) => {
+export const linesRenderer: ViewRenderer = (svgElem, delaunay, canvas) => {
+	const { points } = canvas;
+
 	// Draw triangles
 	for (let i = 0; i < delaunay.triangles.length; i += 3) {
 		const p1 = delaunay.triangles[i];
