@@ -4,7 +4,7 @@ import type { InputsConfig } from "./MenuPanel/MenuPanel";
 import { MODES } from "../../config/modes";
 import * as canvasSlice from "../../store/canvasSlice";
 import * as themeSlice from "../../store/themeSlice";
-import { downloadSvgFile } from "../utils/svg";
+import { downloadSvgFile } from "../../utils/svg";
 
 type PanelMap = Record<string, InputsConfig>;
 type CreateMenuConfig = (

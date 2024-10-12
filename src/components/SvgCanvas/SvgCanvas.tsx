@@ -10,7 +10,7 @@ import Delaunator from "../../lib/delaunator";
 import { addPoint, erasePoints } from "../../store/canvasSlice";
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "../../store";
-import { mergeRefs } from "../utils/react";
+import { mergeRefs } from "../../utils/react";
 
 export type OnClickFn = React.SVGProps<SVGSVGElement>["onClick"];
 export type OnDragFn = React.SVGProps<SVGSVGElement>["onPointerMove"];

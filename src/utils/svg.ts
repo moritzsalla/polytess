@@ -1,4 +1,4 @@
-import type { Points } from "../SvgCanvas/renderers";
+import type { Points } from "../components/SvgCanvas/renderers";
 
 export const calculateBoundingBox = (
 	p1: number[],
