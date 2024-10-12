@@ -1,7 +1,6 @@
 // src/store/canvasSlice.ts
 import { createSlice } from "@reduxjs/toolkit";
-import { STORAGE_KEYS } from "../config";
-
+import { LOCAL_STORAGE_KEYS } from "../config/local-storage";
 
 type ThemeState = {
 	value: "light" | "dark";
@@ -21,7 +20,9 @@ const applyTheme = (theme: ThemeValue) => {
 };
 
 const getInitialTheme = (): ThemeValue => {
-	const storedTheme = localStorage.getItem(STORAGE_KEYS.THEME) as ThemeValue;
+	const storedTheme = localStorage.getItem(
+		LOCAL_STORAGE_KEYS.THEME,
+	) as ThemeValue;
 	return storedTheme || "light";
 };
 
@@ -33,7 +34,7 @@ const initialState: ThemeState = {
 // (changes will persist between page reloads)
 const saveToLocalStorageAction = (state: ThemeState) => {
 	// Save program snapshot to local storage
-	localStorage.setItem(STORAGE_KEYS.THEME, state.value);
+	localStorage.setItem(LOCAL_STORAGE_KEYS.THEME, state.value);
 };
 
 const themeSlice = createSlice({

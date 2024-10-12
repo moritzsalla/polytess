@@ -1,14 +1,7 @@
 import type Delaunator from "delaunator";
 import { calculateBoundingBox } from "../utils/svg";
+import type { View } from "../../config/views";
 
-export const VIEWS = [
-	{ name: "lines" },
-	{ name: "gradient" },
-	{ name: "vertex" },
-	{ name: "pattern" },
-] as const;
-
-export type View = (typeof VIEWS)[number]["name"];
 export type Points = Array<[number, number]>;
 
 type Renderer = (
@@ -198,6 +191,8 @@ const pattern: Renderer = (points, delaunay, svg) => {
 	}
 };
 
+const image: Renderer = () => {};
+
 const VIEW_RENDERERS: {
 	[K in View]: Renderer;
 } = {
@@ -205,6 +200,7 @@ const VIEW_RENDERERS: {
 	vertex,
 	gradient,
 	pattern,
+	image,
 };
 
 export const generateView = (

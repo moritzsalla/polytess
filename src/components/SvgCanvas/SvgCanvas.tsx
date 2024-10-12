@@ -2,11 +2,12 @@ import css from "./SvgCanvas.module.css";
 import React, { forwardRef, useEffect, useRef } from "react";
 import { generateView } from "./renderers";
 
-import SvgCanvasCustomCursor from "./SvgCanvasCustomCursor";
+import SvgCanvasCustomCursor, {
+	ERASE_MODE_RADIUS,
+} from "./SvgCanvasCustomCursor";
 
 import Delaunator from "../../lib/delaunator";
 import { addPoint, erasePoints } from "../../store/canvasSlice";
-import { ERASE_MODE_RADIUS } from "../../config";
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "../../store";
 import { mergeRefs } from "../utils/react";

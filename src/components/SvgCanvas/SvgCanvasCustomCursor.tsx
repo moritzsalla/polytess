@@ -1,8 +1,10 @@
 import css from "./SvgCanvas.module.css";
 
 import { useRef } from "react";
-import { ERASE_MODE_RADIUS, type Mode } from "../../config";
 import { useMove } from "@use-gesture/react";
+import type { Mode } from "../../config/modes";
+
+export const ERASE_MODE_RADIUS = 60;
 
 type SvgCanvasCustomCursorProps = {
 	mode: Mode;

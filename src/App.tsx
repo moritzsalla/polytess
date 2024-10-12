@@ -5,8 +5,6 @@ import Menu from "./components/Menu/Menu";
 import { useSelector } from "react-redux";
 import type { RootState } from "./store";
 
-// TODO: image trace view
-
 const ERROR_FALLBACK_COMPONENT = <div>Something went wrong</div>;
 
 const App = () => {

@@ -1,8 +1,6 @@
 import css from "./Menu.module.css";
 import Button from "../Button/Button";
-import { MODES } from "../../config";
 import { useDispatch, useSelector } from "react-redux";
-
 import {
 	clearPoints,
 	generatePoints,
@@ -14,160 +12,117 @@ import {
 	invertTheme,
 	saveToLocalStorage as themeSaveToLocalStorage,
 } from "../../store/themeSlice";
-import { useState } from "react";
-import { VIEWS } from "../SvgCanvas/renderers";
+import { useState, useMemo } from "react";
 import { downloadSvgFile } from "../utils/svg";
 import type { RootState } from "../../store";
+import MenuPanel, { type InputsConfig } from "./MenuPanel/MenuPanel";
+import type { Dispatch, UnknownAction } from "@reduxjs/toolkit";
+import { VIEWS, type View } from "../../config/views";
+import { MODES } from "../../config/modes";
+
+const createMenuConfig = (
+	view: View,
+	dispatch: Dispatch<UnknownAction>,
+	isSaved: boolean,
+	setIsSaved: (value: boolean) => void,
+) => {
+	const baseConfig: Record<string, InputsConfig> = {
+		Mode: MODES.map(({ name }) => ({
+			type: "button" as const,
+			label: name,
+			onClick: () => dispatch(setMode(name)),
+		})),
+		View: VIEWS.map(({ name }) => ({
+			type: "button" as const,
+			label: name,
+			onClick: () => dispatch(setView(name)),
+		})),
+		Controls: [
+			{
+				type: "button" as const,
+				label: "randomize",
+				onClick: () => dispatch(generatePoints()),
+			},
+			{
+				type: "button" as const,
+				label: "clear",
+				onClick: () => dispatch(clearPoints()),
+			},
+		],
+		Theme: [
+			{
+				type: "button" as const,
+				label: "invert",
+				onClick: () => dispatch(invertTheme()),
+			},
+		],
+		Export: [
+			{
+				type: "button" as const,
+				label: isSaved ? "saved!" : "save",
+				onClick: () => {
+					dispatch(themeSaveToLocalStorage());
+					dispatch(canvasSaveToLocalStorage());
+					setIsSaved(true);
+					setTimeout(() => setIsSaved(false), 2000);
+				},
+			},
+			{
+				type: "button" as const,
+				label: "export",
+				onClick: () => {
+					const svgElement = document.querySelector("svg");
+					if (svgElement) {
+						downloadSvgFile(svgElement, "export");
+					}
+				},
+			},
+		],
+	};
+
+	// View-specific controls
+	if (view === "image") {
+		baseConfig.Controls.unshift({
+			type: "file",
+			label: "upload image",
+			onChange: (e) => {
+				alert("Not implemented yet");
+			},
+		});
+	}
+
+	return baseConfig;
+};
 
 const Menu = () => {
 	const [showControls, setShowControls] = useState(true);
+	const [isSaved, setIsSaved] = useState(false);
+
+	const dispatch = useDispatch();
+	const view = useSelector<RootState, RootState["canvas"]["view"]>(
+		(state) => state.canvas.view,
+	);
+
+	const menuConfig = useMemo(
+		() => createMenuConfig(view, dispatch, isSaved, setIsSaved),
+		[dispatch, view, isSaved],
+	);
 
 	return (
 		<menu className={css.wrapper}>
-			{showControls && <Controls />}
-
+			{showControls && (
+				<div className={css.inner}>
+					{Object.entries(menuConfig).map(([title, inputs]) => (
+						<MenuPanel key={title} title={title} inputs={inputs} />
+					))}
+				</div>
+			)}
 			<div className={css.overlay}>
 				<Button onClick={() => setShowControls((state) => !state)}>
 					{showControls ? "hide" : "show"}
 				</Button>
 			</div>
 		</menu>
-	);
-};
-
-const Controls = () => {
-	const dispatch = useDispatch();
-	const [saved, setSaved] = useState(false);
-
-	const view = useSelector<RootState, RootState["canvas"]["view"]>(
-		(state) => state.canvas.view,
-	);
-
-	const controls = [] as PanelInputsConfig;
-
-	if (view === "gradient") {
-		// TODO View specific controls
-	}
-
-	return (
-		<div className={css.inner}>
-			<Panel
-				title='Mode'
-				inputs={MODES.map(({ name }) => ({
-					type: "button",
-					label: name,
-					onClick: () => dispatch(setMode(name)),
-				}))}
-			/>
-			<Panel
-				title='View'
-				inputs={VIEWS.map(({ name }) => ({
-					type: "button",
-					label: name,
-					onClick: () => dispatch(setView(name)),
-				}))}
-			/>
-			<Panel
-				title='Controls'
-				inputs={[
-					...controls,
-					{
-						type: "button",
-						label: "random",
-						onClick: () => dispatch(generatePoints()),
-					},
-					{
-						type: "button",
-						label: "clear",
-						onClick: () => dispatch(clearPoints()),
-					},
-				]}
-			/>
-			<Panel
-				title='Theme'
-				inputs={[
-					{
-						type: "button",
-						label: "invert",
-						onClick: () => dispatch(invertTheme()),
-					},
-				]}
-			/>
-			<Panel
-				title='Export'
-				inputs={[
-					{
-						type: "button",
-						label: saved ? "saved!" : "save",
-						onClick: () => {
-							// Save current state of program to localhost
-							// to persist changes between page reloads.
-							dispatch(themeSaveToLocalStorage());
-							dispatch(canvasSaveToLocalStorage());
-							// Show "Saved!" for 2 seconds
-							setSaved(true);
-							setTimeout(() => setSaved(false), 2000);
-						},
-					},
-					{
-						type: "button",
-						label: "export",
-						onClick: () => {
-							const svgElement = document.querySelector("svg");
-							if (svgElement) {
-								downloadSvgFile(svgElement, "export");
-							}
-						},
-					},
-				]}
-			/>
-		</div>
-	);
-};
-
-type PanelInputsConfig = Array<
-	// Button
-	| {
-			type: "button";
-			label: string;
-			onClick: () => void;
-	  }
-	// Color picker
-	| {
-			type: "color";
-			label: string;
-			value: string;
-			onChange: (value: string) => void;
-	  }
->;
-
-const Panel = ({
-	title,
-	inputs,
-}: {
-	title: string;
-	inputs: PanelInputsConfig;
-}) => {
-	return (
-		<div className={css.panel}>
-			<h2>({title})</h2>
-			<div className={css.grid}>
-				{inputs.map((input, index) => {
-					// TODO Add more input types
-
-					if (input.type === "button") {
-						const { label, onClick } = input;
-						return (
-							<Button key={`${index}${label}`} onClick={onClick}>
-								{label}
-							</Button>
-						);
-					}
-
-					return null;
-				})}
-			</div>
-		</div>
 	);
 };
 

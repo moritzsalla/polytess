@@ -5,7 +5,7 @@ const Button = ({
 	onClick,
 }: {
 	children: React.ReactNode;
-	onClick: () => void;
+	onClick: React.MouseEventHandler<HTMLButtonElement>;
 }) => {
 	return (
 		<button type='button' className={css.root} onClick={onClick}>

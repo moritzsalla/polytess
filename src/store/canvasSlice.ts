@@ -1,8 +1,10 @@
 // src/store/canvasSlice.ts
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
-import { STORAGE_KEYS, type Mode } from "../config";
-import type { View, Points } from "../components/SvgCanvas/renderers";
+import type { Points } from "../components/SvgCanvas/renderers";
 import { generateRandomPoints } from "../components/utils/svg";
+import type { Mode } from "../config/modes";
+import { LOCAL_STORAGE_KEYS } from "../config/local-storage";
+import type { View } from "../config/views";
 
 type CanvasState = {
 	mode: Mode;
@@ -12,9 +14,12 @@ type CanvasState = {
 
 const getInitialState = (): CanvasState => {
 	return {
-		mode: (localStorage.getItem(STORAGE_KEYS.MODE) as Mode) || "draw",
-		view: (localStorage.getItem(STORAGE_KEYS.VIEW) as View) || "gradient",
-		points: JSON.parse(localStorage.getItem(STORAGE_KEYS.POINTS) || "[]"),
+		mode: (localStorage.getItem(LOCAL_STORAGE_KEYS.MODE) as Mode) || "draw",
+		view:
+			(localStorage.getItem(LOCAL_STORAGE_KEYS.VIEW) as View) || "gradient",
+		points: JSON.parse(
+			localStorage.getItem(LOCAL_STORAGE_KEYS.POINTS) || "[]",
+		),
 	};
 };
 
@@ -63,9 +68,12 @@ const generatePointsAction = (state: CanvasState) => {
 // (changes will persist between page reloads)
 const saveToLocalStorageAction = (state: CanvasState) => {
 	// Save program snapshot to local storage
-	localStorage.setItem(STORAGE_KEYS.POINTS, JSON.stringify(state.points));
-	localStorage.setItem(STORAGE_KEYS.VIEW, state.view);
-	localStorage.setItem(STORAGE_KEYS.MODE, state.mode);
+	localStorage.setItem(
+		LOCAL_STORAGE_KEYS.POINTS,
+		JSON.stringify(state.points),
+	);
+	localStorage.setItem(LOCAL_STORAGE_KEYS.VIEW, state.view);
+	localStorage.setItem(LOCAL_STORAGE_KEYS.MODE, state.mode);
 };
 
 const canvasSlice = createSlice({
