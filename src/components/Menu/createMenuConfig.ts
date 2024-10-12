@@ -6,28 +6,38 @@ import * as canvasSlice from "../../store/canvasSlice";
 import * as themeSlice from "../../store/themeSlice";
 import { downloadSvgFile } from "../utils/svg";
 
-export const createMenuConfig = (
+type PanelMap = Record<string, InputsConfig>;
+type CreateMenuConfig = (
+	view: View,
+	dispatch: Dispatch<UnknownAction>,
+	isSaved: boolean,
+	setIsSaved: (value: boolean) => void,
+) => PanelMap;
+
+export const createMenuConfig: CreateMenuConfig = (
 	view: View,
 	dispatch: Dispatch<UnknownAction>,
 	isSaved: boolean,
 	setIsSaved: (value: boolean) => void,
 ) => {
-	const baseConfig: Record<string, InputsConfig> = {
+	const baseConfig: PanelMap = {
 		Mode: MODES.map(({ name }) => ({
 			type: "button" as const,
 			label: name,
 			onClick: () => dispatch(canvasSlice.setMode(name)),
 		})),
+
 		View: VIEWS.map(({ name }) => ({
 			type: "button" as const,
 			label: name,
 			onClick: () => dispatch(canvasSlice.setView(name)),
 		})),
+
 		Controls: [
 			{
 				type: "button" as const,
 				label: "randomize",
-				onClick: () => dispatch(canvasSlice.generatePoints()),
+				onClick: () => dispatch(canvasSlice.randomize()),
 			},
 			{
 				type: "button" as const,
@@ -35,6 +45,7 @@ export const createMenuConfig = (
 				onClick: () => dispatch(canvasSlice.clearPoints()),
 			},
 		],
+
 		Theme: [
 			{
 				type: "button" as const,
@@ -42,6 +53,7 @@ export const createMenuConfig = (
 				onClick: () => dispatch(themeSlice.invertTheme()),
 			},
 		],
+
 		Export: [
 			{
 				type: "button" as const,
@@ -58,9 +70,7 @@ export const createMenuConfig = (
 				label: "export",
 				onClick: () => {
 					const svgElement = document.querySelector("svg");
-					if (svgElement) {
-						downloadSvgFile(svgElement, "export");
-					}
+					if (svgElement) downloadSvgFile(svgElement, "export");
 				},
 			},
 		],
@@ -72,7 +82,14 @@ export const createMenuConfig = (
 			type: "file",
 			label: "upload image",
 			onChange: (e) => {
-				alert("Not implemented yet");
+				const file = e.target.files?.[0];
+				if (file) {
+					const reader = new FileReader();
+					reader.onload = () => {
+						dispatch(canvasSlice.readImage(reader.result as string));
+					};
+					reader.readAsDataURL(file);
+				}
 			},
 		});
 	}

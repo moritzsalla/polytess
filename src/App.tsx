@@ -1,6 +1,6 @@
 import SvgCanvas from "./components/SvgCanvas/SvgCanvas";
 import ErrorBoundary from "./components/ErrorBoundary/ErrorBoundary";
-
+import css from "./App.module.css";
 import Menu from "./components/Menu/Menu";
 import { useSelector } from "react-redux";
 import type { RootState } from "./store";
@@ -13,7 +13,7 @@ const App = () => {
 	);
 
 	return (
-		<div className='App'>
+		<div className={css.root}>
 			<ErrorBoundary
 				// Force re-render of canvas when key changes. This won't clear the canvas.
 				key={view}
