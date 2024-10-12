@@ -1,5 +1,5 @@
 {
-  "compilerOptions": {
+	"compilerOptions": {
 		"target": "es5",
 		"lib": ["dom", "dom.iterable", "esnext"],
 		"verbatimModuleSyntax": true,
@@ -16,6 +16,6 @@
 		"isolatedModules": true,
 		"noEmit": true,
 		"jsx": "react-jsx"
-  },
-  "include": ["src", "./src/lib/delaunator.d.ts"]
+	},
+	"include": ["src", "src/library/delaunator.d.ts"]
 }
