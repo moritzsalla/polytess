@@ -10,6 +10,7 @@ type CanvasState = {
 	mode: Mode;
 	view: View;
 	points: Points;
+	maxEdgeLength: number;
 };
 
 const getInitialState = (): CanvasState => {
@@ -20,11 +21,15 @@ const getInitialState = (): CanvasState => {
 	const points = JSON.parse(
 		localStorage.getItem(LOCAL_STORAGE_KEYS.POINTS) || "[]",
 	);
+	const maxEdgeLength = parseInt(
+		localStorage.getItem(LOCAL_STORAGE_KEYS.MAX_EDGE_LENGTH) || "Infinity",
+	);
 
 	return {
 		mode,
 		view,
 		points,
+		maxEdgeLength,
 	};
 };
 
@@ -113,30 +118,28 @@ const readImageAction = (state: CanvasState, action: PayloadAction<string>) => {
 	}
 };
 
+const setMaxEdgeLengthAction = (
+	state: CanvasState,
+	action: PayloadAction<number>,
+) => {
+	state.maxEdgeLength = action.payload;
+};
+
 const canvasSlice = createSlice({
 	name: "canvas",
 	initialState: getInitialState(),
 	reducers: {
+		addPoint: addPointAction,
+		clearPoints: clearPointsAction,
+		erasePoints: erasePointsAction,
+		randomize: randomizeAction,
+		readImage: readImageAction,
+		saveToLocalStorage: saveToLocalStorageAction,
+		setMaxEdgeLength: setMaxEdgeLengthAction,
 		setMode: setModeAction,
 		setView: setViewAction,
-		addPoint: addPointAction,
-		erasePoints: erasePointsAction,
-		clearPoints: clearPointsAction,
-		randomize: randomizeAction,
-		saveToLocalStorage: saveToLocalStorageAction,
-		readImage: readImageAction,
 	},
 });
 
-export const {
-	addPoint,
-	clearPoints,
-	erasePoints,
-	randomize,
-	setMode,
-	setView,
-	saveToLocalStorage,
-	readImage,
-} = canvasSlice.actions;
-
+export const { ...canvasActions } = canvasSlice.actions;
 export default canvasSlice.reducer;

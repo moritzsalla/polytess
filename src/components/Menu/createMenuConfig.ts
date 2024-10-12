@@ -2,8 +2,8 @@ import type { Dispatch, UnknownAction } from "@reduxjs/toolkit";
 import { VIEWS, type View } from "../../config/views";
 import type { InputsConfig } from "./MenuPanel/MenuPanel";
 import { MODES } from "../../config/modes";
-import * as canvasSlice from "../../store/canvasSlice";
-import * as themeSlice from "../../store/themeSlice";
+import { canvasActions } from "../../store/canvasSlice";
+import { themeActions } from "../../store/themeSlice";
 import { downloadSvgFile } from "../../utils/svg";
 
 type PanelMap = Record<string, InputsConfig>;
@@ -24,25 +24,25 @@ export const createMenuConfig: CreateMenuConfig = (
 		Mode: MODES.map(({ name }) => ({
 			type: "button" as const,
 			label: name,
-			onClick: () => dispatch(canvasSlice.setMode(name)),
+			onClick: () => dispatch(canvasActions.setMode(name)),
 		})),
 
 		View: VIEWS.map(({ name }) => ({
 			type: "button" as const,
 			label: name,
-			onClick: () => dispatch(canvasSlice.setView(name)),
+			onClick: () => dispatch(canvasActions.setView(name)),
 		})),
 
 		Controls: [
 			{
 				type: "button" as const,
 				label: "randomize",
-				onClick: () => dispatch(canvasSlice.randomize()),
+				onClick: () => dispatch(canvasActions.randomize()),
 			},
 			{
 				type: "button" as const,
 				label: "clear",
-				onClick: () => dispatch(canvasSlice.clearPoints()),
+				onClick: () => dispatch(canvasActions.clearPoints()),
 			},
 		],
 
@@ -50,7 +50,7 @@ export const createMenuConfig: CreateMenuConfig = (
 			{
 				type: "button" as const,
 				label: "invert",
-				onClick: () => dispatch(themeSlice.invertTheme()),
+				onClick: () => dispatch(themeActions.invertTheme()),
 			},
 		],
 
@@ -59,8 +59,8 @@ export const createMenuConfig: CreateMenuConfig = (
 				type: "button" as const,
 				label: isSaved ? "saved!" : "save",
 				onClick: () => {
-					dispatch(canvasSlice.saveToLocalStorage());
-					dispatch(themeSlice.saveToLocalStorage());
+					dispatch(canvasActions.saveToLocalStorage());
+					dispatch(themeActions.saveToLocalStorage());
 					setIsSaved(true);
 					setTimeout(() => setIsSaved(false), 2000);
 				},
@@ -86,7 +86,7 @@ export const createMenuConfig: CreateMenuConfig = (
 				if (file) {
 					const reader = new FileReader();
 					reader.onload = () => {
-						dispatch(canvasSlice.readImage(reader.result as string));
+						dispatch(canvasActions.readImage(reader.result as string));
 					};
 					reader.readAsDataURL(file);
 				}

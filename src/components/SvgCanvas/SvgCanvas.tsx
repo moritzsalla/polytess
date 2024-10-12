@@ -5,7 +5,7 @@ import { generateView } from "./renderers";
 import SvgCanvasCustomCursor from "./SvgCanvasCustomCursor/SvgCanvasCustomCursor";
 
 import Delaunator from "../../lib/delaunator";
-import { addPoint, erasePoints } from "../../store/canvasSlice";
+import { canvasActions } from "../../store/canvasSlice";
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "../../store";
 import { ERASE_CURSOR_RADIUS } from "./SvgCanvasCustomCursor/EraseCursor";
@@ -51,10 +51,12 @@ const SvgCanvas = () => {
 
 		switch (mode) {
 			case "draw":
-				dispatch(addPoint([x, y]));
+				dispatch(canvasActions.addPoint([x, y]));
 				break;
 			case "erase":
-				dispatch(erasePoints({ x, y, radius: ERASE_CURSOR_RADIUS }));
+				dispatch(
+					canvasActions.erasePoints({ x, y, radius: ERASE_CURSOR_RADIUS }),
+				);
 				break;
 		}
 	};

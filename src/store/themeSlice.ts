@@ -49,8 +49,7 @@ const themeSlice = createSlice({
 	},
 });
 
-export const { invertTheme, saveToLocalStorage } = themeSlice.actions;
-
+export const { ...themeActions } = themeSlice.actions;
 export default themeSlice.reducer;
 
 applyTheme(initialState.value);
