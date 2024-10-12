@@ -3,13 +3,12 @@ import { useId } from "react";
 
 const ACCEPT = "image/*";
 
-const InputFile = ({
-	label,
-	onChange,
-}: {
+export type InputFileProps = {
 	label: string;
 	onChange: React.ChangeEventHandler<HTMLInputElement>;
-}) => {
+};
+
+const InputFile = ({ label, onChange }: InputFileProps) => {
 	const id = useId();
 
 	return (

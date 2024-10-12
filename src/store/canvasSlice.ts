@@ -33,17 +33,17 @@ const getInitialState = (): CanvasState => {
 	};
 };
 
-const setModeAction = (state: CanvasState, action: PayloadAction<Mode>) => {
+const setMode = (state: CanvasState, action: PayloadAction<Mode>) => {
 	// Update mode
 	state.mode = action.payload;
 };
 
-const setViewAction = (state: CanvasState, action: PayloadAction<View>) => {
+const setView = (state: CanvasState, action: PayloadAction<View>) => {
 	// Update view
 	state.view = action.payload;
 };
 
-const addPointAction = (
+const addPoint = (
 	state: CanvasState,
 	action: PayloadAction<[number, number]>,
 ) => {
@@ -51,7 +51,7 @@ const addPointAction = (
 	state.points.push(action.payload);
 };
 
-const erasePointsAction = (
+const erasePoints = (
 	state: CanvasState,
 	action: PayloadAction<{ x: number; y: number; radius: number }>,
 ) => {
@@ -65,18 +65,18 @@ const erasePointsAction = (
 	});
 };
 
-const clearPointsAction = (state: CanvasState) => {
+const clearPoints = (state: CanvasState) => {
 	state.points = [];
 };
 
-const randomizeAction = (state: CanvasState) => {
+const randomize = (state: CanvasState) => {
 	// Generate random points
 	state.points = generateRandomPoints();
 };
 
 // Save program to localhost
 // (changes will persist between page reloads)
-const saveToLocalStorageAction = (state: CanvasState) => {
+const saveToLocalStorage = (state: CanvasState) => {
 	// Save program snapshot to local storage
 	localStorage.setItem(
 		LOCAL_STORAGE_KEYS.POINTS,
@@ -84,9 +84,13 @@ const saveToLocalStorageAction = (state: CanvasState) => {
 	);
 	localStorage.setItem(LOCAL_STORAGE_KEYS.VIEW, state.view);
 	localStorage.setItem(LOCAL_STORAGE_KEYS.MODE, state.mode);
+	localStorage.setItem(
+		LOCAL_STORAGE_KEYS.MAX_EDGE_LENGTH,
+		state.maxEdgeLength.toString(),
+	);
 };
 
-const readImageAction = (state: CanvasState, action: PayloadAction<string>) => {
+const readImage = (state: CanvasState, action: PayloadAction<string>) => {
 	try {
 		const canvas = document.createElement("canvas");
 		const ctx = canvas.getContext("2d");
@@ -118,7 +122,7 @@ const readImageAction = (state: CanvasState, action: PayloadAction<string>) => {
 	}
 };
 
-const setMaxEdgeLengthAction = (
+const setMaxEdgeLength = (
 	state: CanvasState,
 	action: PayloadAction<number>,
 ) => {
@@ -129,15 +133,15 @@ const canvasSlice = createSlice({
 	name: "canvas",
 	initialState: getInitialState(),
 	reducers: {
-		addPoint: addPointAction,
-		clearPoints: clearPointsAction,
-		erasePoints: erasePointsAction,
-		randomize: randomizeAction,
-		readImage: readImageAction,
-		saveToLocalStorage: saveToLocalStorageAction,
-		setMaxEdgeLength: setMaxEdgeLengthAction,
-		setMode: setModeAction,
-		setView: setViewAction,
+		addPoint,
+		clearPoints,
+		erasePoints,
+		randomize,
+		readImage,
+		saveToLocalStorage,
+		setMaxEdgeLength,
+		setMode,
+		setView,
 	},
 });
 

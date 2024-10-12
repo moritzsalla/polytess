@@ -1,12 +1,11 @@
 import css from "./Button.module.css";
 
-const Button = ({
-	children,
-	onClick,
-}: {
+export type ButtonProps = {
 	children: React.ReactNode;
 	onClick: React.MouseEventHandler<HTMLButtonElement>;
-}) => {
+};
+
+const Button = ({ children, onClick }: ButtonProps) => {
 	return (
 		<button type='button' className={css.root} onClick={onClick}>
 			{children}

@@ -1,14 +1,14 @@
-import Button from "../../Button/Button";
-import InputFile from "../../InputFile/InputFile";
+import Button, { type ButtonProps } from "../../Button/Button";
+import InputFile, { type InputFileProps } from "../../InputFile/InputFile";
+import Range, { type RangeProps } from "../../Range/Range";
 import css from "./MenuPanel.module.css";
 
 const adaptButton = ({
 	label,
-	onClick,
-}: {
+	...rest
+}: Omit<ButtonProps, "children"> & {
 	label: string;
-	onClick: React.MouseEventHandler<HTMLButtonElement>;
-}) => <Button onClick={onClick}>{label}</Button>;
+}) => <Button {...rest}>{label}</Button>;
 
 const adaptColor = ({
 	label,
@@ -18,18 +18,11 @@ const adaptColor = ({
 	onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }) => <input type='color' onChange={onChange} />;
 
-const adaptFile = ({
-	label,
-	onChange,
-}: {
-	label: string;
-	onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-}) => <InputFile label={label} onChange={onChange} />;
-
 const PANEL_INPUTS = {
 	button: adaptButton,
 	color: adaptColor,
-	file: adaptFile,
+	file: (props: InputFileProps) => <InputFile {...props} />,
+	range: (props: RangeProps) => <Range {...props} />,
 } as const;
 
 type PanelInputType = keyof typeof PANEL_INPUTS;

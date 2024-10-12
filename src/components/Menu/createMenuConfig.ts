@@ -12,43 +12,56 @@ type CreateMenuConfig = (
 	dispatch: Dispatch<UnknownAction>,
 	isSaved: boolean,
 	setIsSaved: (value: boolean) => void,
+	maxEdgeLength: number,
 ) => PanelMap;
 
 export const createMenuConfig: CreateMenuConfig = (
-	view: View,
-	dispatch: Dispatch<UnknownAction>,
-	isSaved: boolean,
-	setIsSaved: (value: boolean) => void,
+	view,
+	dispatch,
+	isSaved,
+	setIsSaved,
+	maxEdgeLength,
 ) => {
 	const baseConfig: PanelMap = {
 		Mode: MODES.map(({ name }) => ({
-			type: "button" as const,
+			type: "button",
 			label: name,
 			onClick: () => dispatch(canvasActions.setMode(name)),
 		})),
 
 		View: VIEWS.map(({ name }) => ({
-			type: "button" as const,
+			type: "button",
 			label: name,
 			onClick: () => dispatch(canvasActions.setView(name)),
 		})),
 
 		Controls: [
 			{
-				type: "button" as const,
+				type: "button",
 				label: "randomize",
 				onClick: () => dispatch(canvasActions.randomize()),
 			},
 			{
-				type: "button" as const,
+				type: "button",
 				label: "clear",
 				onClick: () => dispatch(canvasActions.clearPoints()),
+			},
+			{
+				type: "range",
+				label: "max edge length",
+				min: 10,
+				max: 500,
+				value: maxEdgeLength,
+				onChange: (e) =>
+					dispatch(
+						canvasActions.setMaxEdgeLength(parseInt(e.target.value)),
+					),
 			},
 		],
 
 		Theme: [
 			{
-				type: "button" as const,
+				type: "button",
 				label: "invert",
 				onClick: () => dispatch(themeActions.invertTheme()),
 			},
@@ -56,7 +69,7 @@ export const createMenuConfig: CreateMenuConfig = (
 
 		Export: [
 			{
-				type: "button" as const,
+				type: "button",
 				label: isSaved ? "saved!" : "save",
 				onClick: () => {
 					dispatch(canvasActions.saveToLocalStorage());
@@ -66,7 +79,7 @@ export const createMenuConfig: CreateMenuConfig = (
 				},
 			},
 			{
-				type: "button" as const,
+				type: "button",
 				label: "export",
 				onClick: () => {
 					const svgElement = document.querySelector("svg");

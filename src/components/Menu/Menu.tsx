@@ -14,10 +14,15 @@ const Menu = () => {
 	const view = useSelector<RootState, RootState["canvas"]["view"]>(
 		(state) => state.canvas.view,
 	);
+	const maxEdgeLength = useSelector<
+		RootState,
+		RootState["canvas"]["maxEdgeLength"]
+	>((state) => state.canvas.maxEdgeLength);
 
 	const menuConfig = useMemo(
-		() => createMenuConfig(view, dispatch, isSaved, setIsSaved),
-		[dispatch, view, isSaved],
+		() =>
+			createMenuConfig(view, dispatch, isSaved, setIsSaved, maxEdgeLength),
+		[dispatch, view, isSaved, maxEdgeLength],
 	);
 
 	return (
