@@ -1,79 +1,79 @@
 import css from "./SvgCanvas.module.css";
-import React, { forwardRef, useEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { generateView } from "./renderers";
 
-import SvgCanvasCustomCursor, {
-	ERASE_MODE_RADIUS,
-} from "./SvgCanvasCustomCursor";
+import SvgCanvasCustomCursor from "./SvgCanvasCustomCursor/SvgCanvasCustomCursor";
 
 import Delaunator from "../../lib/delaunator";
 import { addPoint, erasePoints } from "../../store/canvasSlice";
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "../../store";
-import { mergeRefs } from "../../utils/react";
+import { ERASE_CURSOR_RADIUS } from "./SvgCanvasCustomCursor/EraseCursor";
 
 export type OnClickFn = React.SVGProps<SVGSVGElement>["onClick"];
 export type OnDragFn = React.SVGProps<SVGSVGElement>["onPointerMove"];
 
-type SvgCanvasProps = {};
-
 const MAX_EDGE_LENGTH = Infinity;
 
-const SvgCanvas = forwardRef<SVGSVGElement, SvgCanvasProps>(
-	(_, forwardedRef) => {
-		const svgRef = useRef<React.ElementRef<"svg">>(null);
+const SvgCanvas = () => {
+	// Ref for direct access to SVG DOM element
+	// Used for performance-critical operations outside of React's render cycle
+	const svgRef = useRef<React.ElementRef<"svg">>(null);
 
-		const dispatch = useDispatch();
-		const { mode, view, points } = useSelector<
-			RootState,
-			RootState["canvas"]
-		>((state) => state.canvas);
+	const dispatch = useDispatch();
+	const { mode, view, points } = useSelector<RootState, RootState["canvas"]>(
+		(state) => state.canvas,
+	);
 
-		useEffect(() => {
-			const svgElem = svgRef.current;
-			if (!svgElem) {
-				console.error("SVG element not found");
-				return;
-			}
+	// Effect for updating SVG content outside of React.
+	// This approach bypasses React's virtual DOM for performance reasons.
+	useEffect(() => {
+		const svgElem = svgRef.current;
+		if (!svgElem) {
+			console.error("SVG element not found");
+			return;
+		}
 
-			const delaunay = new Delaunator(points.flat(), MAX_EDGE_LENGTH);
-			generateView(view, svgElem, points, delaunay);
-		}, [points, view]);
+		// Perform Delaunay triangulation and generate view.
+		// This is done outside React's state management for better performance
+		const delaunay = new Delaunator(points.flat(), MAX_EDGE_LENGTH);
+		// Generate view based on delaunay triangulation result (points).
+		generateView(view, svgElem, points, delaunay);
+	}, [points, view]);
 
-		const handleCanvasEvent = (
-			e: React.MouseEvent<SVGSVGElement, MouseEvent>,
-		) => {
-			const rect = e.currentTarget.getBoundingClientRect();
-			const x = e.clientX - rect.left;
-			const y = e.clientY - rect.top;
+	// Handler for both click and drag events
+	const handleCanvasEvent = (
+		e: React.MouseEvent<SVGSVGElement, MouseEvent>,
+	) => {
+		const rect = e.currentTarget.getBoundingClientRect();
+		const x = e.clientX - rect.left;
+		const y = e.clientY - rect.top;
 
-			switch (mode) {
-				case "draw":
-					dispatch(addPoint([x, y]));
-					break;
-				case "erase":
-					dispatch(erasePoints({ x, y, radius: ERASE_MODE_RADIUS }));
-					break;
-			}
-		};
+		switch (mode) {
+			case "draw":
+				dispatch(addPoint([x, y]));
+				break;
+			case "erase":
+				dispatch(erasePoints({ x, y, radius: ERASE_CURSOR_RADIUS }));
+				break;
+		}
+	};
 
-		return (
-			<>
-				<svg
-					// SVG content is rendered outside of React.
-					ref={mergeRefs(svgRef, forwardedRef)}
-					className={css.root}
-					onClick={handleCanvasEvent}
-					// Check if dragging...
-					onPointerMove={(e) => {
-						// ...only if mouse button is pressed.
-						if (e.buttons === 1) handleCanvasEvent(e);
-					}}
-				/>
-				<SvgCanvasCustomCursor mode={mode} svgRef={svgRef} />
-			</>
-		);
-	},
-);
+	return (
+		<>
+			<svg
+				// SVG content is rendered outside of React.
+				ref={svgRef}
+				className={css.root}
+				onClick={handleCanvasEvent}
+				// Handle dragging when mouse button is pressed
+				onPointerMove={(e) => {
+					if (e.buttons === 1) handleCanvasEvent(e);
+				}}
+			/>
+			<SvgCanvasCustomCursor mode={mode} svgRef={svgRef} />
+		</>
+	);
+};
 
 export default SvgCanvas;
