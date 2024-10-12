@@ -58,14 +58,15 @@ const SvgCanvas = forwardRef<SVGSVGElement, SvgCanvasProps>(
 		};
 
 		return (
-			// SVG content will be rendered here outside of React.
 			<>
 				<svg
+					// SVG content is rendered outside of React.
 					ref={mergeRefs(svgRef, forwardedRef)}
 					className={css.root}
 					onClick={handleCanvasEvent}
+					// Check if dragging...
 					onPointerMove={(e) => {
-						// Only if mouse button is pressed
+						// ...only if mouse button is pressed.
 						if (e.buttons === 1) handleCanvasEvent(e);
 					}}
 				/>
