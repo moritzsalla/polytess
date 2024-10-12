@@ -1,5 +1,5 @@
 import type Delaunator from "delaunator";
-import { calculateBoundingBox } from "../../utilities/svg";
+import { calculateBoundingBox } from "../../utils/svg";
 import type { View } from "../../config/views";
 
 export type Points = Array<[number, number]>;
