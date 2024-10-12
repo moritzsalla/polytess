@@ -12,6 +12,8 @@ export type ViewRenderer = (
 	points: Points,
 	delaunay: Delaunator<number[]>,
 	svgElem: SVGElement,
+	gradientStartColor: string,
+	gradientEndColor: string,
 ) => void;
 
 type ViewRenderers = {
@@ -31,6 +33,8 @@ export const generateView = (
 	svgElem: SVGGElement,
 	points: Points,
 	delaunay: Delaunator<number[]>,
+	gradientStartColor: string,
+	gradientEndColor: string,
 ) => {
 	// Clear the SVG element
 	svgElem.innerHTML = "";
@@ -41,5 +45,5 @@ export const generateView = (
 		throw new Error(`Unknown view: ${view}`);
 	}
 
-	renderer(points, delaunay, svgElem);
+	renderer(points, delaunay, svgElem, gradientStartColor, gradientEndColor);
 };

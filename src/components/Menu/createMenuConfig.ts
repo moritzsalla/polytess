@@ -13,6 +13,8 @@ type CreateMenuConfig = (
 	isSaved: boolean,
 	setIsSaved: (value: boolean) => void,
 	maxEdgeLength: number,
+	gradientStartColor: string,
+	gradientEndColor: string,
 ) => PanelMap;
 
 export const createMenuConfig: CreateMenuConfig = (
@@ -21,6 +23,8 @@ export const createMenuConfig: CreateMenuConfig = (
 	isSaved,
 	setIsSaved,
 	maxEdgeLength,
+	gradientStartColor,
+	gradientEndColor,
 ) => {
 	const baseConfig: PanelMap = {
 		Mode: MODES.map(({ name }) => ({
@@ -104,6 +108,23 @@ export const createMenuConfig: CreateMenuConfig = (
 					reader.readAsDataURL(file);
 				}
 			},
+		});
+	}
+
+	if (view === "gradient") {
+		baseConfig.Controls.unshift({
+			type: "color",
+			// label: "start color",
+			value: gradientStartColor,
+			onChange: (e) =>
+				dispatch(themeActions.setGradientStartColor(e.target.value)),
+		});
+		baseConfig.Controls.unshift({
+			type: "color",
+			// label: "end color",
+			value: gradientEndColor,
+			onChange: (e) =>
+				dispatch(themeActions.setGradientEndColor(e.target.value)),
 		});
 	}
 

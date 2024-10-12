@@ -22,7 +22,7 @@ const getInitialState = (): CanvasState => {
 		localStorage.getItem(LOCAL_STORAGE_KEYS.POINTS) || "[]",
 	);
 	const maxEdgeLength = parseInt(
-		localStorage.getItem(LOCAL_STORAGE_KEYS.MAX_EDGE_LENGTH) || "Infinity",
+		localStorage.getItem(LOCAL_STORAGE_KEYS.MAX_EDGE_LENGTH) || "500",
 	);
 
 	return {

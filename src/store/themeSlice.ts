@@ -4,6 +4,8 @@ import { LOCAL_STORAGE_KEYS } from "../config/local-storage";
 
 type ThemeState = {
 	value: "light" | "dark";
+	gradientStartColor: string;
+	gradientEndColor: string;
 };
 
 type ThemeValue = ThemeState["value"];
@@ -28,6 +30,8 @@ const getInitialTheme = (): ThemeValue => {
 
 const initialState: ThemeState = {
 	value: getInitialTheme(),
+	gradientStartColor: "red",
+	gradientEndColor: "blue",
 };
 
 const invertTheme = (state: ThemeState) => {
@@ -40,6 +44,28 @@ const invertTheme = (state: ThemeState) => {
 const saveToLocalStorage = (state: ThemeState) => {
 	// Save program snapshot to local storage
 	localStorage.setItem(LOCAL_STORAGE_KEYS.THEME, state.value);
+	localStorage.setItem(
+		LOCAL_STORAGE_KEYS.GRADIENT_COLOR_START,
+		state.gradientStartColor,
+	);
+	localStorage.setItem(
+		LOCAL_STORAGE_KEYS.GRADIENT_COLOR_END,
+		state.gradientEndColor,
+	);
+};
+
+const setGradientStartColor = (
+	state: ThemeState,
+	action: { payload: string },
+) => {
+	state.gradientStartColor = action.payload;
+};
+
+const setGradientEndColor = (
+	state: ThemeState,
+	action: { payload: string },
+) => {
+	state.gradientEndColor = action.payload;
 };
 
 const themeSlice = createSlice({
@@ -48,6 +74,8 @@ const themeSlice = createSlice({
 	reducers: {
 		invertTheme,
 		saveToLocalStorage,
+		setGradientStartColor,
+		setGradientEndColor,
 	},
 });
 

@@ -1,6 +1,15 @@
 import type { ViewRenderer } from ".";
 
-export const gradientRenderer: ViewRenderer = (points, delaunay, svgElem) => {
+export const GRADIENT_COLOR_START = "--gradient-start";
+export const GRADIENT_COLOR_END = "--gradient-end";
+
+export const gradientRenderer: ViewRenderer = (
+	points,
+	delaunay,
+	svgElem,
+	gradientStartColor,
+	gradientEndColor,
+) => {
 	// Create a <defs> section if it doesn't exist
 	let defs = svgElem.querySelector("defs");
 	if (!defs) {
@@ -42,8 +51,8 @@ export const gradientRenderer: ViewRenderer = (points, delaunay, svgElem) => {
 
 		// Create gradient stops
 		const stops = [
-			{ offset: "0%", color: "red" },
-			{ offset: "100%", color: "blue" },
+			{ offset: "0%", color: gradientStartColor },
+			{ offset: "100%", color: gradientEndColor },
 		];
 
 		stops.forEach((stop) => {

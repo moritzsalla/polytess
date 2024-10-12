@@ -11,12 +11,11 @@ const adaptButton = ({
 }) => <Button {...rest}>{label}</Button>;
 
 const adaptColor = ({
-	label,
+	value,
 	onChange,
-}: {
-	label: string;
-	onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-}) => <input type='color' onChange={onChange} />;
+}: React.InputHTMLAttributes<HTMLInputElement>) => (
+	<input type='color' value={value} onChange={onChange} />
+);
 
 const PANEL_INPUTS = {
 	button: adaptButton,

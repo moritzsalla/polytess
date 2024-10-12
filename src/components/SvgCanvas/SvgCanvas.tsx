@@ -13,8 +13,6 @@ import { ERASE_CURSOR_RADIUS } from "./SvgCanvasCustomCursor/EraseCursor";
 export type OnClickFn = React.SVGProps<SVGSVGElement>["onClick"];
 export type OnDragFn = React.SVGProps<SVGSVGElement>["onPointerMove"];
 
-
-
 const SvgCanvas = () => {
 	// Ref for direct access to SVG DOM element
 	// Used for performance-critical operations outside of React's render cycle
@@ -25,6 +23,14 @@ const SvgCanvas = () => {
 		RootState,
 		RootState["canvas"]
 	>((state) => state.canvas);
+	const gradientStartColor = useSelector<
+		RootState,
+		RootState["theme"]["gradientStartColor"]
+	>((state) => state.theme.gradientStartColor);
+	const gradientEndColor = useSelector<
+		RootState,
+		RootState["theme"]["gradientEndColor"]
+	>((state) => state.theme.gradientEndColor);
 
 	// Effect for updating SVG content outside of React.
 	// This approach bypasses React's virtual DOM for performance reasons.
@@ -39,8 +45,15 @@ const SvgCanvas = () => {
 		// This is done outside React's state management for better performance
 		const delaunay = new Delaunator(points.flat(), maxEdgeLength);
 		// Generate view based on delaunay triangulation result (points).
-		generateView(view, svgElem, points, delaunay);
-	}, [points, view, maxEdgeLength]);
+		generateView(
+			view,
+			svgElem,
+			points,
+			delaunay,
+			gradientStartColor,
+			gradientEndColor,
+		);
+	}, [points, view, maxEdgeLength, gradientStartColor, gradientEndColor]);
 
 	// Handler for both click and drag events
 	const handleCanvasEvent = (

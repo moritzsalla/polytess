@@ -11,6 +11,14 @@ const Menu = () => {
 	const [isSaved, setIsSaved] = useState(false);
 
 	const dispatch = useDispatch();
+	const gradientStartColor = useSelector<
+		RootState,
+		RootState["theme"]["gradientStartColor"]
+	>((state) => state.theme.gradientStartColor);
+	const gradientEndColor = useSelector<
+		RootState,
+		RootState["theme"]["gradientEndColor"]
+	>((state) => state.theme.gradientEndColor);
 	const view = useSelector<RootState, RootState["canvas"]["view"]>(
 		(state) => state.canvas.view,
 	);
@@ -21,8 +29,23 @@ const Menu = () => {
 
 	const menuConfig = useMemo(
 		() =>
-			createMenuConfig(view, dispatch, isSaved, setIsSaved, maxEdgeLength),
-		[dispatch, view, isSaved, maxEdgeLength],
+			createMenuConfig(
+				view,
+				dispatch,
+				isSaved,
+				setIsSaved,
+				maxEdgeLength,
+				gradientStartColor,
+				gradientEndColor,
+			),
+		[
+			dispatch,
+			view,
+			isSaved,
+			maxEdgeLength,
+			gradientStartColor,
+			gradientEndColor,
+		],
 	);
 
 	return (
