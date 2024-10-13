@@ -3,9 +3,9 @@ import type { CanvasState } from "../../../store/canvasSlice";
 import { linesRenderer } from "./linesRenderer";
 import { vertexRenderer } from "./vertexRenderer";
 import { gradientRenderer } from "./gradientRenderer";
-import { imageRenderer } from "./imageRenderer";
 
-export type Points = Array<[number, number]>;
+export type Point = [x: number, y: number];
+export type Points = Array<Point>;
 
 export type ViewRenderer = (
 	svgElem: SVGGElement,
@@ -21,7 +21,6 @@ const VIEW_RENDERERS = {
 	lines: linesRenderer,
 	vertex: vertexRenderer,
 	gradient: gradientRenderer,
-	image: imageRenderer,
 } as const satisfies ViewRenderers;
 
 export type View = keyof typeof VIEW_RENDERERS;

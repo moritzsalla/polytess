@@ -1,9 +1,10 @@
 // src/store/canvasSlice.ts
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
-import type { Points, View } from "../components/SvgCanvas/renderers";
+import type { Point, Points, View } from "../components/SvgCanvas/renderers";
 import { generateRandomPoints } from "../utils/svg";
 import type { Mode } from "../config/modes";
 import { LOCAL_STORAGE_KEYS } from "../config/local-storage";
+import { detectEdges } from "../utils/image";
 
 export type CanvasState = {
 	mode: Mode;
@@ -78,10 +79,7 @@ const setView = (state: CanvasState, action: PayloadAction<View>) => {
 	state.view = action.payload;
 };
 
-const addPoint = (
-	state: CanvasState,
-	action: PayloadAction<[number, number]>,
-) => {
+const addPoint = (state: CanvasState, action: PayloadAction<Point>) => {
 	// Add a point to the array
 	state.points.push(action.payload);
 };
@@ -109,36 +107,8 @@ const randomize = (state: CanvasState) => {
 	state.points = generateRandomPoints();
 };
 
-const readImage = (state: CanvasState, action: PayloadAction<string>) => {
-	try {
-		const canvas = document.createElement("canvas");
-		const ctx = canvas.getContext("2d");
-		const img = new Image();
-
-		const handleImageLoad = () => {
-			canvas.width = img.width;
-			canvas.height = img.height;
-			ctx?.drawImage(img, 0, 0);
-
-			const imageData = ctx?.getImageData(0, 0, canvas.width, canvas.height);
-			if (!imageData) throw new Error("Failed to read image data.");
-
-			// Pixel data (Uint8ClampedArray)
-			const pixels = imageData.data;
-			console.log("pixels", pixels);
-
-			// Get
-
-			// Update your state with the new image data
-			// state.image = modifiedDataUrl;
-		};
-
-		img.onload = handleImageLoad;
-		img.src = action.payload;
-	} catch (error) {
-		console.log("Failed to read image.", error);
-		throw new Error("Failed to read image.");
-	}
+const setPoints = (state: CanvasState, action: PayloadAction<Points>) => {
+	state.points = action.payload;
 };
 
 const setMaxEdgeLength = (
@@ -170,7 +140,7 @@ const canvasSlice = createSlice({
 		clearPoints,
 		erasePoints,
 		randomize,
-		readImage,
+		setPoints,
 		saveToLocalStorage,
 		setMaxEdgeLength,
 		setMode,

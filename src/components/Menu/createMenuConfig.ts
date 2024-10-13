@@ -3,8 +3,9 @@ import type { InputsConfig } from "./MenuPanel/MenuPanel";
 import { MODES } from "../../config/modes";
 import { canvasActions, type CanvasState } from "../../store/canvasSlice";
 import { themeActions } from "../../store/themeSlice";
-import { downloadSvgFile } from "../../utils/svg";
+import { downloadSvgFile, generateRandomPoints } from "../../utils/svg";
 import { VIEWS } from "../SvgCanvas/renderers";
+import { detectEdges, loadAndProcessImage } from "../../utils/image";
 
 type PanelMap = Record<string, InputsConfig>;
 type CreateMenuConfig = (
@@ -38,6 +39,21 @@ export const createMenuConfig: CreateMenuConfig = (
 		})),
 
 		Controls: [
+			{
+				type: "file",
+				label: "upload image",
+				onChange: async (e: React.ChangeEvent<HTMLInputElement>) => {
+					const file = e.target.files?.[0];
+					if (file) {
+						try {
+							const points = await loadAndProcessImage(file);
+							dispatch(canvasActions.setPoints(points));
+						} catch (error) {
+							console.error("Failed to process image:", error);
+						}
+					}
+				},
+			},
 			{
 				type: "button",
 				label: "randomize",
@@ -91,25 +107,9 @@ export const createMenuConfig: CreateMenuConfig = (
 		],
 	};
 
-	// View-specific controls
-	if (view === "image") {
-		baseConfig.Controls.unshift({
-			type: "file",
-			label: "upload image",
-			onChange: (e) => {
-				const file = e.target.files?.[0];
-				if (file) {
-					const reader = new FileReader();
-					reader.onload = () => {
-						dispatch(canvasActions.readImage(reader.result as string));
-					};
-					reader.readAsDataURL(file);
-				}
-			},
-		});
-	}
-
+	// View specific controls:
 	if (view === "gradient") {
+		// Gradient-Start color
 		baseConfig.Controls.unshift({
 			type: "color",
 			label: "start color",
@@ -117,6 +117,7 @@ export const createMenuConfig: CreateMenuConfig = (
 			onChange: (e) =>
 				dispatch(canvasActions.setGradientStartColor(e.target.value)),
 		});
+		// Gradient-End color
 		baseConfig.Controls.unshift({
 			type: "color",
 			label: "end color",

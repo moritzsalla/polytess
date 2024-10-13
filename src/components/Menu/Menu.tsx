@@ -29,8 +29,12 @@ const Menu = () => {
 		<menu className={css.wrapper}>
 			{showControls && (
 				<div className={css.inner}>
-					{Object.entries(menuConfig).map(([title, inputs]) => (
-						<MenuPanel key={title} title={title} inputs={inputs} />
+					{Object.entries(menuConfig).map(([title, inputs], index) => (
+						<MenuPanel
+							key={`${title}-${inputs.length}_${index}`}
+							title={title}
+							inputs={inputs}
+						/>
 					))}
 				</div>
 			)}
