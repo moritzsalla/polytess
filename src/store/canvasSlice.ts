@@ -1,10 +1,8 @@
-// src/store/canvasSlice.ts
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import type { Point, Points, View } from "../components/SvgCanvas/renderers";
 import { generateRandomPoints } from "../utils/svg";
 import type { Mode } from "../config/modes";
 import { LOCAL_STORAGE_KEYS } from "../config/local-storage";
-import { detectEdges } from "../utils/image";
 
 export type CanvasState = {
 	mode: Mode;
@@ -15,8 +13,11 @@ export type CanvasState = {
 		startColor: string;
 		endColor: string;
 	};
+	imageFile: File | null;
 };
 
+// Attempt to retrieve the program state from local storage.
+// If no state is found, return hardcoded defaults.
 const getInitialState = (): CanvasState => {
 	const mode =
 		(localStorage.getItem(LOCAL_STORAGE_KEYS.MODE) as Mode) ?? "draw";
@@ -44,6 +45,7 @@ const getInitialState = (): CanvasState => {
 			startColor,
 			endColor,
 		},
+		imageFile: null,
 	};
 };
 
@@ -72,10 +74,12 @@ const saveToLocalStorage = (state: CanvasState) => {
 };
 
 const setMode = (state: CanvasState, action: PayloadAction<Mode>) => {
+	// Change interaction mode
 	state.mode = action.payload;
 };
 
 const setView = (state: CanvasState, action: PayloadAction<View>) => {
+	// Change rendering view
 	state.view = action.payload;
 };
 
@@ -99,15 +103,18 @@ const erasePoints = (
 };
 
 const clearPoints = (state: CanvasState) => {
+	// Delete all points from the array.
+	// Cannot be restored unless saved to local storage.
 	state.points = [];
 };
 
 const randomize = (state: CanvasState) => {
-	// Generate random points
+	// Generate random points.
 	state.points = generateRandomPoints();
 };
 
 const setPoints = (state: CanvasState, action: PayloadAction<Points>) => {
+	// Set all points at once.
 	state.points = action.payload;
 };
 
@@ -115,8 +122,12 @@ const setMaxEdgeLength = (
 	state: CanvasState,
 	action: PayloadAction<number>,
 ) => {
+	// Setting maximum edge length will cutoff long edges,
+	// adding white space between points.
 	state.maxEdgeLength = action.payload;
 };
+
+// GRADIENT
 
 const setGradientStartColor = (
 	state: CanvasState,
@@ -140,13 +151,13 @@ const canvasSlice = createSlice({
 		clearPoints,
 		erasePoints,
 		randomize,
-		setPoints,
 		saveToLocalStorage,
+		setGradientEndColor,
+		setGradientStartColor,
 		setMaxEdgeLength,
 		setMode,
+		setPoints,
 		setView,
-		setGradientStartColor,
-		setGradientEndColor,
 	},
 });
 

@@ -3,9 +3,9 @@ import type { InputsConfig } from "./MenuPanel/MenuPanel";
 import { MODES } from "../../config/modes";
 import { canvasActions, type CanvasState } from "../../store/canvasSlice";
 import { themeActions } from "../../store/themeSlice";
-import { downloadSvgFile, generateRandomPoints } from "../../utils/svg";
+import { downloadSvgFile } from "../../utils/svg";
 import { VIEWS } from "../SvgCanvas/renderers";
-import { detectEdges, loadAndProcessImage } from "../../utils/image";
+import { loadAndProcessImage } from "../../utils/image";
 
 type PanelMap = Record<string, InputsConfig>;
 type CreateMenuConfig = (

@@ -1,4 +1,3 @@
-// src/store/canvasSlice.ts
 import { createSlice } from "@reduxjs/toolkit";
 import { LOCAL_STORAGE_KEYS } from "../config/local-storage";
 
@@ -19,6 +18,8 @@ const applyTheme = (theme: ThemeValue) => {
 	}
 };
 
+// Attempt to retrieve the program state from local storage.
+// If no state is found, return hardcoded defaults.
 const getInitialTheme = (): ThemeValue => {
 	const storedTheme = localStorage.getItem(
 		LOCAL_STORAGE_KEYS.THEME,
