@@ -3,4 +3,10 @@
 	user-select: none;
 	height: 100%;
 	width: 100%;
+	opacity: 1;
+	transition: opacity 0.15s var(--easeSmooth);
+
+	@starting-style {
+		opacity: 0;
+	}
 }

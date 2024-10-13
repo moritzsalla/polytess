@@ -13,7 +13,8 @@
 	width: fit-content;
 	transition:
 		background-color 0.15s var(--easeSmooth),
-		scale 0.15s var(--easeSmooth);
+		scale 0.15s var(--easeSmooth),
+		opacity 0.15s var(--easeSmooth);
 	scale: 1;
 	cursor: pointer;
 
@@ -34,6 +35,11 @@
 		);
 		scale: 1;
 	}
+
+	@starting-style {
+      opacity: 0;
+      scale: 0.5;
+   }
 }
 
 .input {

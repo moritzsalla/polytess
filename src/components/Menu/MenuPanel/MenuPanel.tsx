@@ -3,8 +3,9 @@ import type { ButtonProps } from "../../Button/Button";
 import css from "./MenuPanel.module.css";
 
 const Button = lazy(() => import("../../Button/Button"));
-const Range = lazy(() => import("../../Range/Range"));
+const InputRange = lazy(() => import("../../InputRange/InputRange"));
 const InputFile = lazy(() => import("../../InputFile/InputFile"));
+const InputColor = lazy(() => import("../../InputColor/InputColor"));
 
 const PANEL_INPUTS = {
 	button: ({
@@ -12,19 +13,11 @@ const PANEL_INPUTS = {
 		...rest
 	}: Omit<ButtonProps, "children"> & {
 		label: string;
-	}) => {
-		return <Button {...rest}>{label}</Button>;
-	},
+	}) => <Button {...rest}>{label}</Button>,
 
-	color: ({
-		value,
-		onChange,
-	}: React.InputHTMLAttributes<HTMLInputElement>) => {
-		return <input type='color' value={value} onChange={onChange} />;
-	},
-
+	color: InputColor,
 	file: InputFile,
-	range: Range,
+	range: InputRange,
 } as const;
 
 type PanelInputType = keyof typeof PANEL_INPUTS;

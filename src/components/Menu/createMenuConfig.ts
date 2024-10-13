@@ -112,14 +112,14 @@ export const createMenuConfig: CreateMenuConfig = (
 	if (view === "gradient") {
 		baseConfig.Controls.unshift({
 			type: "color",
-			// label: "start color",
+			label: "start color",
 			value: gradient.startColor,
 			onChange: (e) =>
 				dispatch(canvasActions.setGradientStartColor(e.target.value)),
 		});
 		baseConfig.Controls.unshift({
 			type: "color",
-			// label: "end color",
+			label: "end color",
 			value: gradient.endColor,
 			onChange: (e) =>
 				dispatch(canvasActions.setGradientEndColor(e.target.value)),
