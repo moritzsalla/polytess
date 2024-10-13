@@ -1,5 +1,32 @@
-.wrapper {}
+.wrapper {
+	padding: 0.75rem 1.25rem;
+	border-radius: 1rem;
+	background-color: color-mix(
+		in srgb,
+		var(--color-secondary) 10%,
+		transparent
+	);
+	display: flex;
+	align-items: center;
+	flex-direction: row;
+	gap: 0.5rem;
+	width: fit-content;
+	color: var(--color-secondary);
+	backdrop-filter: blur(0.5rem);
+}
 
-.label {}
+.label {
+	transition:
+		background-color 0.15s var(--easeSmooth),
+		scale 0.15s var(--easeSmooth),
+		opacity 0.15s var(--easeSmooth);
+	scale: 1;
 
-.input {}
+	@starting-style {
+		opacity: 0;
+		scale: 0.5;
+	}
+}
+
+.input {
+}

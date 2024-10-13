@@ -112,7 +112,7 @@ export const createMenuConfig: CreateMenuConfig = (
 		// Gradient-Start color
 		baseConfig.Controls.unshift({
 			type: "color",
-			label: "start color",
+			label: "Gradient Start",
 			value: gradient.startColor,
 			onChange: (e) =>
 				dispatch(canvasActions.setGradientStartColor(e.target.value)),
@@ -120,7 +120,7 @@ export const createMenuConfig: CreateMenuConfig = (
 		// Gradient-End color
 		baseConfig.Controls.unshift({
 			type: "color",
-			label: "end color",
+			label: "Gradient End",
 			value: gradient.endColor,
 			onChange: (e) =>
 				dispatch(canvasActions.setGradientEndColor(e.target.value)),
