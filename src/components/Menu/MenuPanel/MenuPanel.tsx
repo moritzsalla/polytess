@@ -50,7 +50,10 @@ const MenuPanel = ({ title, inputs }: MenuPanelProps) => {
 					const { type, ...props } = input;
 					return (
 						<Suspense>
-							<InputEl key={`input-${type}_${index}`} {...props} />
+							<InputEl
+								key={`inputs-${title}-${type}_${index}`}
+								{...props}
+							/>
 						</Suspense>
 					);
 				})}
