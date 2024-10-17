@@ -50,12 +50,10 @@ const MenuPanel = ({ title, inputs }: MenuPanelProps) => {
 					const { type, ...props } = input;
 					return (
 						<Suspense
+							key={`inputs-${title}-${type}_${index}`}
 							fallback={<div className={css.skeleton}>&nbsp;</div>}
 						>
-							<InputEl
-								key={`inputs-${title}-${type}_${index}`}
-								{...props}
-							/>
+							<InputEl {...props} />
 						</Suspense>
 					);
 				})}
