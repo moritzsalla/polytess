@@ -48,16 +48,16 @@ const SvgCanvas = () => {
 		const x = e.clientX - rect.left;
 		const y = e.clientY - rect.top;
 
-		switch (mode) {
-			case "draw":
-				dispatch(canvasActions.addPoint([x, y]));
-				break;
-			case "erase":
-				dispatch(
-					canvasActions.erasePoints({ x, y, radius: ERASE_CURSOR_RADIUS }),
-				);
-				break;
-		}
+		const actions = {
+			draw: canvasActions.addPoint([x, y]),
+			erase: canvasActions.erasePoints({
+				x,
+				y,
+				radius: ERASE_CURSOR_RADIUS,
+			}),
+		} as const;
+
+		dispatch(actions[mode]);
 	};
 
 	return (
