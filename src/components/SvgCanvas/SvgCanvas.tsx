@@ -53,7 +53,7 @@ const SvgCanvas = () => {
 		// Edit mode is momentary. It removes the polygon that was clicked using CSS,
 		// but does not modify the state.
 		// Therefore, recomputing the Delaunay triangulation will reset the canvas to pre-edit state.
-		if (mode === "edit") {
+		if (mode === "erase (snapshot)") {
 			// check if clicked element is a polygon
 			const target = e.target as SVGElement;
 			if (target.tagName === "polygon") {
@@ -70,7 +70,7 @@ const SvgCanvas = () => {
 				y,
 				radius: ERASE_CURSOR_RADIUS,
 			}),
-			edit: null,
+			"erase (snapshot)": null,
 		} as const;
 
 		dispatch(actions[mode] ?? { type: "NOOP" });
