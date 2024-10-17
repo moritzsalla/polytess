@@ -18,6 +18,7 @@ const SvgCanvas = () => {
 	// Used for performance-critical operations outside of React's render cycle
 	const svgRef = useRef<React.ElementRef<"svg">>(null);
 
+	// Redux hooks for state management
 	const dispatch = useDispatch();
 	const canvas = useSelector<RootState, RootState["canvas"]>(
 		(state) => state.canvas,
@@ -44,10 +45,24 @@ const SvgCanvas = () => {
 	const handleCanvasEvent = (
 		e: React.MouseEvent<SVGSVGElement, MouseEvent>,
 	) => {
+		// Get the coordinates of the click relative to the SVG element
 		const rect = e.currentTarget.getBoundingClientRect();
 		const x = e.clientX - rect.left;
 		const y = e.clientY - rect.top;
 
+		// Edit mode is momentary. It removes the polygon that was clicked using CSS,
+		// but does not modify the state.
+		// Therefore, recomputing the Delaunay triangulation will reset the canvas to pre-edit state.
+		if (mode === "edit") {
+			// check if clicked element is a polygon
+			const target = e.target as SVGElement;
+			if (target.tagName === "polygon") {
+				target.style.display = "none";
+			}
+			return;
+		}
+
+		// Actions for each mode
 		const actions = {
 			draw: canvasActions.addPoint([x, y]),
 			erase: canvasActions.erasePoints({
@@ -55,21 +70,22 @@ const SvgCanvas = () => {
 				y,
 				radius: ERASE_CURSOR_RADIUS,
 			}),
+			edit: null,
 		} as const;
 
-		dispatch(actions[mode]);
+		dispatch(actions[mode] ?? { type: "NOOP" });
 	};
 
 	return (
 		<>
 			<svg
-				// SVG content is rendered outside of React.
+				// * NOTE: SVG content is rendered outside of React.
 				ref={svgRef}
 				aria-label='Canvas'
 				className={css.root}
 				onClick={handleCanvasEvent}
-				// Handle dragging when mouse button is pressed
 				onPointerMove={(e) => {
+					// Handle dragging when mouse button is pressed
 					if (e.buttons === 1) {
 						handleCanvasEvent(e);
 					}
