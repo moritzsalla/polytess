@@ -11,10 +11,13 @@ const EraseCursor = ({ mode, svgRef }: SvgCanvasCustomCursorProps) => {
 	useMove(
 		({ xy: [x, y] }) => {
 			if (!cursorRef.current) return;
+
 			// Prevent cursor from showing up at 0,0
 			cursorRef.current.style.display = "block";
-			cursorRef.current.style.left = `${x}px`;
-			cursorRef.current.style.top = `${y}px`;
+			// Hint to browser to perform optimizations
+			cursorRef.current.style.willChange = "transform";
+			// Use gpu-accelerated transform to move the cursor
+			cursorRef.current.style.transform = `translate3d(calc(${x}px - 50%), calc(${y}px - 50%), 0)`;
 		},
 		{
 			enabled: mode === "erase",

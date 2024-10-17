@@ -22,7 +22,6 @@ const SvgCanvas = () => {
 	const canvas = useSelector<RootState, RootState["canvas"]>(
 		(state) => state.canvas,
 	);
-
 	const { mode, view, points, maxEdgeLength } = canvas;
 
 	// Effect for updating SVG content outside of React.
@@ -66,11 +65,14 @@ const SvgCanvas = () => {
 			<svg
 				// SVG content is rendered outside of React.
 				ref={svgRef}
+				aria-label='Canvas'
 				className={css.root}
 				onClick={handleCanvasEvent}
 				// Handle dragging when mouse button is pressed
 				onPointerMove={(e) => {
-					if (e.buttons === 1) handleCanvasEvent(e);
+					if (e.buttons === 1) {
+						handleCanvasEvent(e);
+					}
 				}}
 			/>
 			<SvgCanvasCustomCursor mode={mode} svgRef={svgRef} />
