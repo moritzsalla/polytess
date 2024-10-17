@@ -35,11 +35,6 @@
 		);
 		scale: 1;
 	}
-
-	@starting-style {
-      opacity: 0;
-      scale: 0.5;
-   }
 }
 
 .input {

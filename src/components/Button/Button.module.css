@@ -11,13 +11,8 @@
 	display: inline-block;
 	text-align: center;
 	width: fit-content;
-	transition:
-		background-color 0.15s var(--easeSmooth),
-		scale 0.15s var(--easeSmooth),
-		opacity 0.15s var(--easeSmooth);
-	scale: 1;
+	transition: background-color 0.15s var(--easeSmooth);
 	cursor: pointer;
-	opacity: 1;
 
 	&:hover {
 		background-color: color-mix(
@@ -35,10 +30,5 @@
 			transparent
 		);
 		scale: 1;
-	}
-
-	@starting-style {
-		opacity: 0;
-		scale: 0.5;
 	}
 }

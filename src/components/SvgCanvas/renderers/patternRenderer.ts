@@ -48,7 +48,7 @@ export const patternRenderer: ViewRenderer = (svgElem, delaunay, canvas) => {
 			"polygon",
 		);
 
-		const pointsAttr = `${points[p1][0]},${points[p1][1]} ${points[p2][0]},${points[p2][1]} ${points[p3][0]},${points[p3][1]}`;
+		const pointsAttr = [points[p1], points[p2], points[p3]].flat().join(",");
 		polygon.setAttribute("points", pointsAttr);
 
 		// Set fill to use this specific image pattern

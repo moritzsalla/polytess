@@ -1,7 +1,7 @@
 import type Delaunator from "delaunator";
 import type { CanvasState } from "../../../store/canvasSlice";
 import { linesRenderer } from "./linesRenderer";
-import { vertexRenderer } from "./vertexRenderer";
+import { dotRenderer } from "./dotRenderer";
 import { gradientRenderer } from "./gradientRenderer";
 
 export type Point = [x: number, y: number];
@@ -19,7 +19,7 @@ type ViewRenderers = {
 
 const VIEW_RENDERERS = {
 	lines: linesRenderer,
-	vertex: vertexRenderer,
+	dots: dotRenderer,
 	gradient: gradientRenderer,
 } as const satisfies ViewRenderers;
 

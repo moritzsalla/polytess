@@ -1,6 +1,6 @@
 import type { ViewRenderer } from ".";
 
-export const vertexRenderer: ViewRenderer = (svgElem, delaunay, canvas) => {
+export const dotRenderer: ViewRenderer = (svgElem, delaunay, canvas) => {
 	const { points } = canvas;
 
 	// Create shapes

@@ -24,12 +24,9 @@ export const gradientRenderer: ViewRenderer = (svgElem, delaunay, canvas) => {
 			"polygon",
 		);
 
-		// Improve AA
-		polygon.setAttribute("shape-rendering", "auto");
-
 		polygon.setAttribute(
 			"points",
-			`${points[p1][0]},${points[p1][1]} ${points[p2][0]},${points[p2][1]} ${points[p3][0]},${points[p3][1]}`,
+			[points[p1], points[p2], points[p3]].flat().join(","),
 		);
 
 		// Create a unique ID for each gradient

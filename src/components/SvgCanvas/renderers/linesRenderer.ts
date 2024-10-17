@@ -14,10 +14,9 @@ export const linesRenderer: ViewRenderer = (svgElem, delaunay, canvas) => {
 			"polygon",
 		);
 
-		polygon.setAttribute("shape-rendering", "auto");
 		polygon.setAttribute(
 			"points",
-			`${points[p1][0]},${points[p1][1]} ${points[p2][0]},${points[p2][1]} ${points[p3][0]},${points[p3][1]}`,
+			[points[p1], points[p2], points[p3]].flat().join(","),
 		);
 		polygon.setAttribute("fill", "none");
 		polygon.setAttribute("stroke", "currentcolor");
