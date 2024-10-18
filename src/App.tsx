@@ -2,15 +2,12 @@ import SvgCanvas from "./components/SvgCanvas/SvgCanvas";
 import ErrorBoundary from "./components/ErrorBoundary/ErrorBoundary";
 import css from "./App.module.css";
 import Menu from "./components/Menu/Menu";
-import { useSelector } from "react-redux";
-import type { RootState } from "./store";
+import { useView } from "./hooks/useView";
 
 const ERROR_FALLBACK_COMPONENT = <div>Something went wrong</div>;
 
 const App = () => {
-	const view = useSelector<RootState, RootState["canvas"]["view"]>(
-		(state) => state.canvas.view,
-	);
+	const view = useView();
 
 	return (
 		<div className={css.root}>

@@ -9,9 +9,15 @@ import { canvasActions } from "../../store/canvasSlice";
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "../../store";
 import { ERASE_CURSOR_RADIUS } from "./SvgCanvasCustomCursor/EraseCursor";
+import { createSelector } from "@reduxjs/toolkit";
 
 export type OnClickFn = React.SVGProps<SVGSVGElement>["onClick"];
 export type OnDragFn = React.SVGProps<SVGSVGElement>["onPointerMove"];
+
+const selectCanvas = createSelector(
+	(state: RootState) => state.canvas,
+	(canvas) => canvas,
+);
 
 const SvgCanvas = () => {
 	// Ref for direct access to SVG DOM element
@@ -20,9 +26,7 @@ const SvgCanvas = () => {
 
 	// Redux hooks for state management
 	const dispatch = useDispatch();
-	const canvas = useSelector<RootState, RootState["canvas"]>(
-		(state) => state.canvas,
-	);
+	const canvas = useSelector(selectCanvas);
 	const { mode, view, points, maxEdgeLength } = canvas;
 
 	// Effect for updating SVG content outside of React.

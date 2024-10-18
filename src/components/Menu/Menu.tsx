@@ -1,23 +1,19 @@
 import css from "./Menu.module.css";
 import Button from "../Button/Button";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { useState, useMemo } from "react";
-import type { RootState } from "../../store";
 import MenuPanel from "./MenuPanel/MenuPanel";
 import { createMenuConfig } from "./createMenuConfig";
-import type { CanvasState } from "../../store/canvasSlice";
+import { useCanvas } from "../../hooks/useCanvas";
+import { useMaxEdgeLength } from "../../hooks/useMaxEdgeLength";
 
 const Menu = () => {
 	const [showControls, setShowControls] = useState(true);
 	const [isSaved, setIsSaved] = useState(false);
 
 	const dispatch = useDispatch();
-
-	const canvas = useSelector<RootState, CanvasState>((state) => state.canvas);
-	const maxEdgeLength = useSelector<
-		RootState,
-		RootState["canvas"]["maxEdgeLength"]
-	>((state) => state.canvas.maxEdgeLength);
+	const canvas = useCanvas();
+	const maxEdgeLength = useMaxEdgeLength();
 
 	const menuConfig = useMemo(
 		() =>
