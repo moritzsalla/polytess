@@ -10,3 +10,40 @@
 		opacity: 0;
 	}
 }
+
+.loading {
+	opacity: 0;
+	pointer-events: none;
+}
+
+.loadingSpinner {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 1rem;
+	height: 1rem;
+	margin: var(--contentPadding);
+	border: 0.5rem solid var(--color-primary);
+	border-top-color: var(--color-secondary);
+	border-radius: 50%;
+	animation: spin 0.5s infinite var(--easeSmooth);
+	opacity: 1;
+	scale: 1;
+	transition:
+		opacity 0.15s var(--easeSmooth),
+		scale 0.15s var(--easeSmooth);
+
+	@starting-style {
+		opacity: 1;
+		scale: 0;
+	}
+}
+
+@keyframes spin {
+	0% {
+		transform: rotate(0deg);
+	}
+	100% {
+		transform: rotate(360deg);
+	}
+}

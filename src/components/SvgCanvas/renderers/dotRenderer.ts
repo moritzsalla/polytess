@@ -1,13 +1,17 @@
 import type { ViewRenderer } from ".";
 
-export const dotRenderer: ViewRenderer = (svgElem, delaunay, canvas) => {
+export const dotRenderer: ViewRenderer = (
+	svgElem,
+	delaunayTriangles,
+	canvas,
+) => {
 	const { points } = canvas;
 
 	// Create shapes
-	for (let i = 0; i < delaunay.triangles.length; i += 3) {
-		const p1 = delaunay.triangles[i];
-		const p2 = delaunay.triangles[i + 1];
-		const p3 = delaunay.triangles[i + 2];
+	for (let i = 0; i < delaunayTriangles.length; i += 3) {
+		const p1 = delaunayTriangles[i];
+		const p2 = delaunayTriangles[i + 1];
+		const p3 = delaunayTriangles[i + 2];
 
 		// Calculate center point of triangle
 		const centerX = (points[p1][0] + points[p2][0] + points[p3][0]) / 3;

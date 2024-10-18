@@ -1,49 +1,22 @@
 import css from "./SvgCanvas.module.css";
-import React, { useEffect, useRef } from "react";
-import { generateView } from "./renderers";
+import React from "react";
 
 import SvgCanvasCustomCursor from "./SvgCanvasCustomCursor/SvgCanvasCustomCursor";
-
-import Delaunator from "../../lib/delaunator";
 import { canvasActions } from "../../store/canvasSlice";
-import { useDispatch, useSelector } from "react-redux";
-import type { RootState } from "../../store";
 import { ERASE_CURSOR_RADIUS } from "./SvgCanvasCustomCursor/EraseCursor";
-import { createSelector } from "@reduxjs/toolkit";
+
+import { useCanvas } from "../../hooks/useCanvas";
+import { useDispatch } from "react-redux";
+import { useDelaunayWorker } from "../../hooks/useDelaunayWorker";
 
 export type OnClickFn = React.SVGProps<SVGSVGElement>["onClick"];
 export type OnDragFn = React.SVGProps<SVGSVGElement>["onPointerMove"];
 
-const selectCanvas = createSelector(
-	(state: RootState) => state.canvas,
-	(canvas) => canvas,
-);
-
 const SvgCanvas = () => {
-	// Ref for direct access to SVG DOM element
-	// Used for performance-critical operations outside of React's render cycle
-	const svgRef = useRef<React.ElementRef<"svg">>(null);
+	const { svgRef, isLoading } = useDelaunayWorker();
 
-	// Redux hooks for state management
 	const dispatch = useDispatch();
-	const canvas = useSelector(selectCanvas);
-	const { mode, view, points, maxEdgeLength } = canvas;
-
-	// Effect for updating SVG content outside of React.
-	// This approach bypasses React's virtual DOM for performance reasons.
-	useEffect(() => {
-		const svgElem = svgRef.current;
-		if (!svgElem) {
-			console.error("SVG element not found");
-			return;
-		}
-
-		// Perform Delaunay triangulation and generate view.
-		// This is done outside React's state management for better performance
-		const delaunay = new Delaunator(points.flat(), maxEdgeLength);
-		// Generate view based on delaunay triangulation result (points).
-		generateView(svgElem, delaunay, canvas);
-	}, [points, view, maxEdgeLength, canvas]);
+	const { mode } = useCanvas();
 
 	// Handler for both click and drag events
 	const handleCanvasEvent = (
@@ -57,24 +30,26 @@ const SvgCanvas = () => {
 		// Edit mode is momentary. It removes the polygon that was clicked using CSS,
 		// but does not modify the state.
 		// Therefore, recomputing the Delaunay triangulation will reset the canvas to pre-edit state.
-		if (mode === "erase (snapshot)") {
+		if (mode === "erase (faces)") {
 			// check if clicked element is a polygon
 			const target = e.target as SVGElement;
+
 			if (target.tagName === "polygon") {
 				target.style.display = "none";
 			}
+
 			return;
 		}
 
 		// Actions for each mode
 		const actions = {
 			draw: canvasActions.addPoint([x, y]),
-			erase: canvasActions.erasePoints({
+			"erase (vertices)": canvasActions.erasePoints({
 				x,
 				y,
 				radius: ERASE_CURSOR_RADIUS,
 			}),
-			"erase (snapshot)": null,
+			"erase (faces)": null,
 		} as const;
 
 		dispatch(actions[mode] ?? { type: "NOOP" });
@@ -82,6 +57,7 @@ const SvgCanvas = () => {
 
 	return (
 		<>
+			{isLoading && <div className={css.loadingSpinner} />}
 			<svg
 				// * NOTE: SVG content is rendered outside of React.
 				ref={svgRef}
@@ -90,9 +66,8 @@ const SvgCanvas = () => {
 				onClick={handleCanvasEvent}
 				onPointerMove={(e) => {
 					// Handle dragging when mouse button is pressed
-					if (e.buttons === 1) {
-						handleCanvasEvent(e);
-					}
+					if (e.buttons !== 1) return;
+					handleCanvasEvent(e);
 				}}
 			/>
 			<SvgCanvasCustomCursor mode={mode} svgRef={svgRef} />

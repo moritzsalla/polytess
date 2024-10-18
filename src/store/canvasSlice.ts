@@ -92,13 +92,14 @@ const erasePoints = (
 	state: CanvasState,
 	action: PayloadAction<{ x: number; y: number; radius: number }>,
 ) => {
-	// Update points array to remove points within the radius of the click
+	const { x, y, radius } = action.payload;
+	const radiusSquared = radius * radius;
+
 	state.points = state.points.filter((point) => {
-		const distance = Math.sqrt(
-			Math.pow(point[0] - action.payload.x, 2) +
-				Math.pow(point[1] - action.payload.y, 2),
-		);
-		return distance > action.payload.radius;
+		const dx = point[0] - x;
+		const dy = point[1] - y;
+		const distanceSquared = dx * dx + dy * dy;
+		return distanceSquared > radiusSquared + 0.0001;
 	});
 };
 

@@ -3,7 +3,11 @@ import type { ViewRenderer } from ".";
 export const GRADIENT_COLOR_START = "--gradient-start";
 export const GRADIENT_COLOR_END = "--gradient-end";
 
-export const gradientRenderer: ViewRenderer = (svgElem, delaunay, canvas) => {
+export const gradientRenderer: ViewRenderer = (
+	svgElem,
+	delaunayTriangles,
+	canvas,
+) => {
 	const { points } = canvas;
 
 	// Create a <defs> section if it doesn't exist
@@ -14,10 +18,10 @@ export const gradientRenderer: ViewRenderer = (svgElem, delaunay, canvas) => {
 	}
 
 	// Draw triangles
-	for (let i = 0; i < delaunay.triangles.length; i += 3) {
-		const p1 = delaunay.triangles[i];
-		const p2 = delaunay.triangles[i + 1];
-		const p3 = delaunay.triangles[i + 2];
+	for (let i = 0; i < delaunayTriangles.length; i += 3) {
+		const p1 = delaunayTriangles[i];
+		const p2 = delaunayTriangles[i + 1];
+		const p3 = delaunayTriangles[i + 2];
 
 		const polygon = document.createElementNS(
 			"http://www.w3.org/2000/svg",
@@ -26,7 +30,7 @@ export const gradientRenderer: ViewRenderer = (svgElem, delaunay, canvas) => {
 
 		polygon.setAttribute(
 			"points",
-			[points[p1], points[p2], points[p3]].flat().join(","),
+			`${points[p1][0]},${points[p1][1]} ${points[p2][0]},${points[p2][1]} ${points[p3][0]},${points[p3][1]}`,
 		);
 
 		// Create a unique ID for each gradient
