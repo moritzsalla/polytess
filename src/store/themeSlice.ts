@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { LOCAL_STORAGE_KEYS } from "../config/local-storage";
+import { LOCAL_STORAGE_KEYS, store } from "../config/local-storage";
 
 export type ThemeState = {
 	value: "light" | "dark";
@@ -21,18 +21,14 @@ const applyTheme = (theme: ThemeValue) => {
 // Attempt to retrieve the program state from local storage.
 // If no state is found, return hardcoded defaults.
 const getInitialTheme = (): ThemeValue => {
-	const storedTheme = localStorage.getItem(
-		LOCAL_STORAGE_KEYS.THEME,
-	) as ThemeValue;
-
+	const storedTheme = store.get("theme") as ThemeValue;
 	return storedTheme ?? "light";
 };
 
 // Save program to local storage
 // (changes will persist between page reloads)
 const saveToLocalStorage = (state: ThemeState) => {
-	// Save program snapshot to local storage
-	localStorage.setItem(LOCAL_STORAGE_KEYS.THEME, state.value);
+	store.put(LOCAL_STORAGE_KEYS.THEME, state.value);
 };
 
 const initialState: ThemeState = {
