@@ -1,4 +1,3 @@
-import type Delaunator from "delaunator";
 import type { CanvasState } from "../../../store/canvasSlice";
 import { lineRenderer } from "./lineRenderer";
 import { dotRenderer } from "./dotRenderer";
