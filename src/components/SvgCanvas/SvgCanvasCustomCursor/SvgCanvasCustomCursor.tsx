@@ -1,4 +1,4 @@
-import type { Mode } from "../../../config/modes";
+import type { Mode, ModeKey } from "../../../config/modes";
 import EraseCursor from "./EraseCursor";
 
 export type SvgCanvasCustomCursorProps = {
@@ -7,18 +7,21 @@ export type SvgCanvasCustomCursorProps = {
 };
 
 const CUSTOM_CURSORS = {
-	erase: EraseCursor,
+	eraseVertices: EraseCursor,
+	eraseFaces: EraseCursor,
 	draw: null,
-} as const;
+} as const satisfies Record<
+	ModeKey,
+	(({ mode, svgRef }: SvgCanvasCustomCursorProps) => JSX.Element) | null
+>;
 
-const SvgCanvasCustomCursor = (props: SvgCanvasCustomCursorProps) => {
-	const { mode, ...rest } = props;
-
-	if (mode in CUSTOM_CURSORS) {
-		const CustomCursor = CUSTOM_CURSORS[mode as keyof typeof CUSTOM_CURSORS];
-		if (CustomCursor) {
-			return <CustomCursor mode={mode} {...rest} />;
-		}
+const SvgCanvasCustomCursor = ({
+	mode,
+	...rest
+}: SvgCanvasCustomCursorProps) => {
+	const CustomCursor = CUSTOM_CURSORS[mode.key];
+	if (CustomCursor) {
+		return <CustomCursor mode={mode} {...rest} />;
 	}
 
 	return null;

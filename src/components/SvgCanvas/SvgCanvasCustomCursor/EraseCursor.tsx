@@ -20,7 +20,7 @@ const EraseCursor = ({ mode, svgRef }: SvgCanvasCustomCursorProps) => {
 			cursorRef.current.style.transform = `translate3d(calc(${x}px - 50%), calc(${y}px - 50%), 0)`;
 		},
 		{
-			enabled: mode === "erase (vertices)",
+			enabled: mode.key === "eraseVertices",
 			target: svgRef,
 		},
 	);

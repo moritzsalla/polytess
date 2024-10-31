@@ -8,6 +8,7 @@ import { ERASE_CURSOR_RADIUS } from "./SvgCanvasCustomCursor/EraseCursor";
 import { useCanvas } from "../../hooks/useCanvas";
 import { useDispatch } from "react-redux";
 import { useDelaunayWorker } from "../../hooks/useDelaunayWorker";
+import { MODES, type ModeKey } from "../../config/modes";
 
 export type OnClickFn = React.SVGProps<SVGSVGElement>["onClick"];
 export type OnDragFn = React.SVGProps<SVGSVGElement>["onPointerMove"];
@@ -17,6 +18,8 @@ const SvgCanvas = () => {
 
 	const dispatch = useDispatch();
 	const { mode } = useCanvas();
+
+	const currentMode = MODES.find((m) => m.key === mode);
 
 	// Handler for both click and drag events
 	const handleCanvasEvent = (
@@ -30,7 +33,7 @@ const SvgCanvas = () => {
 		// Edit mode is momentary. It removes the polygon that was clicked using CSS,
 		// but does not modify the state.
 		// Therefore, recomputing the Delaunay triangulation will reset the canvas to pre-edit state.
-		if (mode === "erase (faces)") {
+		if (mode === "eraseFaces") {
 			// check if clicked element is a polygon
 			const target = e.target as SVGElement;
 
@@ -44,13 +47,13 @@ const SvgCanvas = () => {
 		// Actions for each mode
 		const actions = {
 			draw: canvasActions.addPoint([x, y]),
-			"erase (vertices)": canvasActions.erasePoints({
+			eraseVertices: canvasActions.erasePoints({
 				x,
 				y,
 				radius: ERASE_CURSOR_RADIUS,
 			}),
-			"erase (faces)": null,
-		} as const;
+			eraseFaces: null,
+		} as const satisfies Record<ModeKey, unknown>;
 
 		dispatch(actions[mode] ?? { type: "NOOP" });
 	};
@@ -70,7 +73,9 @@ const SvgCanvas = () => {
 					handleCanvasEvent(e);
 				}}
 			/>
-			<SvgCanvasCustomCursor mode={mode} svgRef={svgRef} />
+			{!!currentMode && (
+				<SvgCanvasCustomCursor mode={currentMode} svgRef={svgRef} />
+			)}
 		</>
 	);
 };

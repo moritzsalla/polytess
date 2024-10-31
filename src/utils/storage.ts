@@ -1,15 +1,11 @@
-export const LOCAL_STORAGE_IDENTIFIER = "_delaunay-svg-program-saved-state";
-export const LOCAL_STORAGE_KEYS = {
-	VIEW: "view",
-	POINTS: "points",
-	MODE: "mode",
-	THEME: "theme",
-	MAX_EDGE_LENGTH: "max-edge-length",
-	GRADIENT_COLOR_START: "gradient-color-start",
-	GRADIENT_COLOR_END: "gradient-color-end",
-} as const satisfies Record<string, string>;
+// **********************
+// LOCAL STORAGE
+// **********************
 
-type StorageKey = (typeof LOCAL_STORAGE_KEYS)[keyof typeof LOCAL_STORAGE_KEYS];
+import {
+	LOCAL_STORAGE_IDENTIFIER,
+	type LocalStorageKey,
+} from "../config/storage";
 
 export const store = {
 	/**
@@ -25,7 +21,7 @@ export const store = {
 	 * console.log(theme); // "light" | "dark" | undefined
 	 * ```
 	 */
-	get: <T>(key?: StorageKey) => {
+	get: <T>(key?: LocalStorageKey) => {
 		const storedState = localStorage.getItem(LOCAL_STORAGE_IDENTIFIER);
 		if (!storedState) {
 			return undefined;
@@ -50,7 +46,7 @@ export const store = {
 	 * store.put("theme", "dark");
 	 * ```
 	 */
-	put: (key: StorageKey, state: unknown) => {
+	put: (key: LocalStorageKey, state: unknown) => {
 		localStorage.setItem(
 			LOCAL_STORAGE_IDENTIFIER,
 			JSON.stringify({

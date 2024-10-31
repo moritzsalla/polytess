@@ -26,10 +26,10 @@ export const createMenuConfig: CreateMenuConfig = (
 	const { view, gradient } = canvas;
 
 	const baseConfig: PanelMap = {
-		Mode: MODES.map(({ name }) => ({
+		Mode: MODES.map(({ key, name }) => ({
 			type: "button",
 			label: name,
-			onClick: () => dispatch(canvasActions.setMode(name)),
+			onClick: () => dispatch(canvasActions.setMode(key)),
 		})),
 
 		View: VIEWS.map((view) => ({

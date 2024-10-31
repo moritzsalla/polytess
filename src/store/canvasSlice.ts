@@ -1,11 +1,11 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import type { Point, Points, View } from "../components/SvgCanvas/renderers";
 import { generateRandomPoints } from "../utils/svg";
-import type { Mode } from "../config/modes";
-import { store } from "../config/local-storage";
+import { store } from "../utils/storage";
+import type { ModeKey } from "../config/modes";
 
 export type CanvasState = {
-	mode: Mode;
+	mode: ModeKey;
 	view: View;
 	points: Points;
 	maxEdgeLength: number;
@@ -19,7 +19,7 @@ export type CanvasState = {
 // Attempt to retrieve the program state from local storage.
 // If no state is found, return hardcoded defaults.
 const getInitialState = (): CanvasState => {
-	const mode = store.get<Mode>("mode") ?? "draw";
+	const mode = store.get<ModeKey>("mode") ?? "draw";
 	const view = store.get<View>("view") ?? "gradient";
 	const points = store.get<Points>("points") ?? [];
 	const maxEdgeLength = store.get<number>("max-edge-length") ?? 500;
@@ -52,7 +52,7 @@ const saveToLocalStorage = (state: CanvasState) => {
 	store.put("gradient-color-end", state.gradient.endColor);
 };
 
-const setMode = (state: CanvasState, action: PayloadAction<Mode>) => {
+const setMode = (state: CanvasState, action: PayloadAction<ModeKey>) => {
 	// Change interaction mode
 	state.mode = action.payload;
 };
