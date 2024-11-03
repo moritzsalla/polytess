@@ -6,6 +6,7 @@
 		var(--color-secondary) 10%,
 		transparent
 	);
+	user-select: none;
 	color: var(--color-secondary);
 	backdrop-filter: blur(0.5rem);
 	display: inline-block;

@@ -1,6 +1,5 @@
 .wrapper {
 	position: fixed;
-	bottom: 0;
 	right: 0;
 	width: 100%;
 	box-sizing: border-box;
@@ -14,6 +13,14 @@
 	* {
 		pointer-events: auto;
 	}
+
+	&[data-position="bottom"] {
+		bottom: 0;
+	}
+
+	&[data-position="top"] {
+		top: 0;
+	}
 }
 
 .inner {
@@ -24,11 +31,17 @@
 	gap: 1rem;
 	grid-template-columns: repeat(6, 1fr);
 	border-radius: var(--borderRadius);
+
+	
 }
 
 .overlay {
 	position: fixed;
 	bottom: 0;
 	right: 0;
+	display: flex;
+	flex-direction: column;
+	gap: var(--panelGridGap);
+	align-items: flex-end;
 	padding: var(--contentPadding);
 }

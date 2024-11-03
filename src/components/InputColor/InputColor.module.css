@@ -1,5 +1,4 @@
 .wrapper {
-	padding: 0.75rem 1.25rem;
 	border-radius: 1rem;
 	background-color: color-mix(
 		in srgb,
@@ -13,10 +12,42 @@
 	width: fit-content;
 	color: var(--color-secondary);
 	backdrop-filter: blur(0.5rem);
+	transition:
+		background-color 0.15s var(--easeSmooth),
+		scale 0.15s var(--easeSmooth);
+
+	&:hover {
+		background-color: color-mix(
+			in srgb,
+			var(--color-secondary) 20%,
+			transparent
+		);
+		scale: 1.05;
+	}
+
+	&:active {
+		background-color: color-mix(
+			in srgb,
+			var(--color-secondary) 10%,
+			transparent
+		);
+		scale: 1;
+	}
 }
 
 .label {
+	padding: 0.75rem 0.25rem 0.75rem 1.25rem;
+	cursor: pointer;
+	user-select: none;
 }
 
 .input {
+	width: 3rem;
+	height: 100%;
+	border-radius: 0 1rem 1rem 0;
+	outline: none;
+	border: none;
+	background-color: transparent;
+	color: var(--color-secondary);
+	padding: 0.75rem 0.75rem 0.75rem 0;
 }

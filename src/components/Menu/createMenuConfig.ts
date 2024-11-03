@@ -66,7 +66,7 @@ export const createMenuConfig: CreateMenuConfig = (
 			},
 			{
 				type: "range",
-				label: "max edge length",
+				label: "mesh density",
 				min: 10,
 				max: 500,
 				value: maxEdgeLength,
@@ -80,7 +80,7 @@ export const createMenuConfig: CreateMenuConfig = (
 		Theme: [
 			{
 				type: "button",
-				label: "invert",
+				label: "dark/light mode",
 				onClick: () => dispatch(themeActions.invertTheme()),
 			},
 		],
@@ -98,10 +98,23 @@ export const createMenuConfig: CreateMenuConfig = (
 			},
 			{
 				type: "button",
-				label: "export",
+				label: "download SVG",
 				onClick: () => {
 					const svgElement = document.querySelector("svg");
 					if (svgElement) downloadSvgFile(svgElement, "export");
+				},
+			},
+			{
+				type: "button",
+				label: "copy SVG",
+				onClick: () => {
+					const svgElement = document.querySelector("svg");
+					if (svgElement) {
+						const svgData = new XMLSerializer().serializeToString(
+							svgElement,
+						);
+						navigator.clipboard.writeText(svgData);
+					}
 				},
 			},
 		],

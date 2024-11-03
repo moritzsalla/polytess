@@ -8,6 +8,7 @@
 	/* Layout */
 	--contentPadding: 2rem;
 	--borderRadius: 1rem;
+	--panelGridGap: 0.35rem;
 }
 
 html {
