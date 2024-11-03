@@ -2,7 +2,7 @@ import type { CanvasState } from "../../../store/canvasSlice";
 import { lineRenderer } from "./lineRenderer";
 import { dotRenderer } from "./dotRenderer";
 import { gradientRenderer } from "./gradientRenderer";
-import type { WorkerResponse } from "../../../hooks/useDelaunayWorker/delaunayWorker";
+import type { WorkerResponse } from "../../../services/workers/delaunayWorker";
 
 export type Point = [x: number, y: number];
 export type Points = Array<Point>;

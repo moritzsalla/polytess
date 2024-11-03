@@ -6,13 +6,13 @@ import MenuPanel from "./MenuPanel/MenuPanel";
 import { createMenuConfig } from "./createMenuConfig";
 import { useCanvas } from "../../hooks/useCanvas";
 import { useMaxEdgeLength } from "../../hooks/useMaxEdgeLength";
-
-type MenuPosition = "top" | "bottom";
+import { useEditorPosition } from "../../hooks/useEditorPosition";
+import { useEditorVisibility } from "../../hooks/useEditorVisibility";
 
 const Menu = () => {
-	const [showControls, setShowControls] = useState(true);
-	const [isSaved, setIsSaved] = useState(false);
-	const [menuPosition, setMenuPosition] = useState<MenuPosition>("top");
+	const [isSaved, setIsSaved] = useState(true);
+	const { isEditorVisible, toggleEditorVisibility } = useEditorVisibility();
+	const { editorPosition, toggleEditorPosition } = useEditorPosition();
 
 	const dispatch = useDispatch();
 	const canvas = useCanvas();
@@ -33,16 +33,16 @@ const Menu = () => {
 	);
 
 	const handleVisibilityChange = () => {
-		setShowControls((state) => !state);
+		toggleEditorVisibility();
 	};
 
 	const handlePositionChange = () => {
-		setMenuPosition((state) => (state === "bottom" ? "top" : "bottom"));
+		toggleEditorPosition();
 	};
 
 	return (
-		<menu className={css.wrapper} data-position={menuPosition}>
-			{showControls && (
+		<menu className={css.wrapper} data-position={editorPosition}>
+			{isEditorVisible && (
 				<div className={css.inner}>
 					{menuConfig.map(([title, inputs], index) => (
 						<MenuPanel
@@ -53,12 +53,13 @@ const Menu = () => {
 					))}
 				</div>
 			)}
+
 			<div className={css.overlay}>
 				<Button onClick={handleVisibilityChange}>
-					{showControls ? "hide" : "show"} controls
+					{isEditorVisible ? "hide" : "show"} controls
 				</Button>
 				<Button onClick={handlePositionChange}>
-					move menu to {menuPosition === "bottom" ? "top" : "bottom"}
+					move menu to {editorPosition === "bottom" ? "top" : "bottom"}
 				</Button>
 			</div>
 		</menu>

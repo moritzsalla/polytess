@@ -1,5 +1,5 @@
 import css from "./SvgCanvas.module.css";
-import React from "react";
+import React, { useMemo } from "react";
 
 import SvgCanvasCustomCursor from "./SvgCanvasCustomCursor/SvgCanvasCustomCursor";
 import { canvasActions } from "../../store/canvasSlice";
@@ -9,17 +9,18 @@ import { useCanvas } from "../../hooks/useCanvas";
 import { useDispatch } from "react-redux";
 import { useDelaunayWorker } from "../../hooks/useDelaunayWorker";
 import { MODES, type ModeKey } from "../../config/modes";
+import { useEditorPosition } from "../../hooks/useEditorPosition";
 
 export type OnClickFn = React.SVGProps<SVGSVGElement>["onClick"];
 export type OnDragFn = React.SVGProps<SVGSVGElement>["onPointerMove"];
 
 const SvgCanvas = () => {
 	const { svgRef, isLoading } = useDelaunayWorker();
+	const { editorPosition } = useEditorPosition();
 
 	const dispatch = useDispatch();
 	const { mode } = useCanvas();
-
-	const currentMode = MODES.find((m) => m.key === mode);
+	const currentMode = useMemo(() => MODES.find((m) => m.key === mode), [mode]);
 
 	// Handler for both click and drag events
 	const handleCanvasEvent = (
@@ -60,9 +61,14 @@ const SvgCanvas = () => {
 
 	return (
 		<>
-			{isLoading && <div className={css.loadingSpinner} />}
+			{isLoading && (
+				<div
+					data-editor-position={editorPosition}
+					className={css.loadingSpinner}
+				/>
+			)}
 			<svg
-				// * NOTE: SVG content is rendered outside of React.
+				// * NOTE: SVG content is rendered *outside of React* for performance reasons.
 				ref={svgRef}
 				aria-label='Canvas'
 				className={css.root}

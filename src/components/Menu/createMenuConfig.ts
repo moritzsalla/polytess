@@ -2,7 +2,7 @@ import type { Dispatch, UnknownAction } from "@reduxjs/toolkit";
 import type { InputsConfig } from "./MenuPanel/MenuPanel";
 import { MODES } from "../../config/modes";
 import { canvasActions, type CanvasState } from "../../store/canvasSlice";
-import { themeActions } from "../../store/themeSlice";
+import { editorActions } from "../../store/editorSlice";
 import { downloadSvgFile } from "../../utils/svg";
 import { VIEWS } from "../SvgCanvas/renderers";
 import { loadAndProcessImage } from "../../utils/image";
@@ -81,7 +81,7 @@ export const createMenuConfig: CreateMenuConfig = (
 			{
 				type: "button",
 				label: "dark/light mode",
-				onClick: () => dispatch(themeActions.invertTheme()),
+				onClick: () => dispatch(editorActions.invertTheme()),
 			},
 		],
 
@@ -91,7 +91,7 @@ export const createMenuConfig: CreateMenuConfig = (
 				label: isSaved ? "saved!" : "save",
 				onClick: () => {
 					dispatch(canvasActions.saveToLocalStorage());
-					dispatch(themeActions.saveToLocalStorage());
+					dispatch(editorActions.saveToLocalStorage());
 					setIsSaved(true);
 					setTimeout(() => setIsSaved(false), 2000);
 				},

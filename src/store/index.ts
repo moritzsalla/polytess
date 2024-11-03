@@ -1,10 +1,10 @@
 import { configureStore } from "@reduxjs/toolkit";
-import themeReducer from "./themeSlice";
+import editorReducer from "./editorSlice";
 import canvasReducer from "./canvasSlice";
 
 export const store = configureStore({
 	reducer: {
-		theme: themeReducer,
+		editor: editorReducer,
 		canvas: canvasReducer,
 	},
 });
