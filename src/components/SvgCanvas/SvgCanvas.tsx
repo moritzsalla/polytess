@@ -79,7 +79,7 @@ const SvgCanvas = () => {
 					handleCanvasEvent(e);
 				}}
 			/>
-			{!!currentMode && (
+			{currentMode?.key === "eraseVertices" && (
 				<SvgCanvasCustomCursor mode={currentMode} svgRef={svgRef} />
 			)}
 		</>
