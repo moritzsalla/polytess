@@ -14,6 +14,7 @@ type CreateMenuConfig = (
 	isSaved: boolean,
 	setIsSaved: (value: boolean) => void,
 	maxEdgeLength: number,
+	cleanupRefRegistry: Array<() => void>,
 ) => PanelMap;
 
 export const createMenuConfig: CreateMenuConfig = (
@@ -22,6 +23,7 @@ export const createMenuConfig: CreateMenuConfig = (
 	isSaved,
 	setIsSaved,
 	maxEdgeLength,
+	cleanupRefRegistry,
 ) => {
 	const { view, gradient } = canvas;
 
@@ -90,10 +92,17 @@ export const createMenuConfig: CreateMenuConfig = (
 				type: "button",
 				label: isSaved ? "saved!" : "save",
 				onClick: () => {
+					// Save to local storage
 					dispatch(canvasActions.saveToLocalStorage());
 					dispatch(editorActions.saveToLocalStorage());
+
+					// Show "saved!" for 2 seconds
 					setIsSaved(true);
-					setTimeout(() => setIsSaved(false), 2000);
+					const timeout = setTimeout(() => setIsSaved(false), 2000);
+					// Cleanup
+					cleanupRefRegistry.push(() => {
+						clearTimeout(timeout);
+					});
 				},
 			},
 			{

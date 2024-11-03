@@ -1,7 +1,7 @@
 import css from "./Menu.module.css";
 import Button from "../Button/Button";
 import { useDispatch } from "react-redux";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useRef, useEffect } from "react";
 import MenuPanel from "./MenuPanel/MenuPanel";
 import { createMenuConfig } from "./createMenuConfig";
 import { useCanvas } from "../../hooks/useCanvas";
@@ -10,7 +10,11 @@ import { useEditorPosition } from "../../hooks/useEditorPosition";
 import { useEditorVisibility } from "../../hooks/useEditorVisibility";
 
 const Menu = () => {
-	const [isSaved, setIsSaved] = useState(true);
+	// We use this to track any possible async calls that might live longer
+	// than the component itself.
+	const cleanupRefRegistry = useRef<Array<() => void>>([]);
+
+	const [isSaved, setIsSaved] = useState(false);
 	const { isEditorVisible, toggleEditorVisibility } = useEditorVisibility();
 	const { editorPosition, toggleEditorPosition } = useEditorPosition();
 
@@ -18,19 +22,27 @@ const Menu = () => {
 	const canvas = useCanvas();
 	const maxEdgeLength = useMaxEdgeLength();
 
-	const menuConfig = useMemo(
-		() =>
-			Object.entries(
-				createMenuConfig(
-					canvas,
-					dispatch,
-					isSaved,
-					setIsSaved,
-					maxEdgeLength,
-				),
+	const menuConfig = useMemo(() => {
+		return Object.entries(
+			// TODO -- flow here is messy, consider refactoring.
+			createMenuConfig(
+				canvas,
+				dispatch,
+				isSaved,
+				setIsSaved,
+				maxEdgeLength,
+				cleanupRefRegistry.current,
 			),
-		[canvas, dispatch, isSaved, maxEdgeLength],
-	);
+		);
+	}, [canvas, dispatch, isSaved, maxEdgeLength]);
+
+	// Cleanup registered fns on component unmount
+	useEffect(() => {
+		const cleanupRegistry = cleanupRefRegistry.current;
+		return () => {
+			cleanupRegistry.forEach((cleanup) => cleanup());
+		};
+	}, []);
 
 	const handleVisibilityChange = () => {
 		toggleEditorVisibility();
