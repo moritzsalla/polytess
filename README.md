@@ -2,6 +2,14 @@ Experiment in creating a tool for creating and manipulating Delaunay triangulati
 
 ![Screenshot](./docs/Screenshot%202024-11-03%20at%2014.33.41.png)
 
+![Screenshot](./docs/Screenshot%202024-10-08%20at%2019.31.01.png)
+
+![Screenshot](./docs/Screenshot%202024-10-31%20at%2022.07.58.png)
+
+![Screenshot](./docs/Screenshot%202024-10-08%20at%2019.30.45.png)
+
+![Screenshot](./docs/Screenshot%202024-11-03%20at%2014.33.46.png)
+
 ## Features
 
 - **Interactive Drawing**: Click or drag to create points
@@ -27,18 +35,8 @@ npm run dev
 - Redux Toolkit
 - TypeScript
 - Web Workers for performance
-- Delaunator for triangulation
+- Delaunator adaption for triangulation
 
 ## License
 
 MIT
-
-![Screenshot](./docs/Screenshot%202024-10-08%20at%2019.31.01.png)
-
-![Screenshot](./docs/Screenshot%202024-10-31%20at%2022.07.58.png)
-
-![Screenshot](./docs/Screenshot%202024-10-08%20at%2019.30.45.png)
-
-![Screenshot](./docs/Screenshot%202024-11-03%20at%2014.33.46.png)
-
-
