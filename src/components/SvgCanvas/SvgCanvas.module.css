@@ -4,7 +4,7 @@
 	height: 100%;
 	width: 100%;
 	opacity: 1;
-	transition: opacity 0.15s var(--easeSmooth);
+	transition: opacity 0.15s var(--easing-smooth);
 
 	@starting-style {
 		opacity: 0;
@@ -21,16 +21,16 @@
 	left: 0;
 	width: 1rem;
 	height: 1rem;
-	margin: var(--contentPadding);
+	margin: var(--content-padding);
 	border: 0.5rem solid var(--color-primary);
 	border-top-color: var(--color-secondary);
 	border-radius: 50%;
-	animation: spin 0.5s infinite var(--easeSmooth);
+	animation: spin 0.5s infinite var(--easing-smooth);
 	opacity: 1;
 	scale: 1;
 	transition:
-		opacity 0.15s var(--easeSmooth),
-		scale 0.15s var(--easeSmooth);
+		opacity 0.15s var(--easing-smooth),
+		scale 0.15s var(--easing-smooth);
 
 	&[data-editor-position="top"] {
 		bottom: 0;

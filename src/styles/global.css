@@ -2,13 +2,40 @@
 	/* Colors */
 	--color-primary: black;
 	--color-secondary: white;
+
 	/* Easings */
-	--easeSnappy: cubic-bezier(0.87, 0, 0.13, 1);
-	--easeSmooth: cubic-bezier(0.45, 0.02, 0.09, 0.98);
+	--easing-snappy: cubic-bezier(0.87, 0, 0.13, 1);
+	--easing-smooth: cubic-bezier(0.45, 0.02, 0.09, 0.98);
+
 	/* Layout */
-	--contentPadding: 2rem;
-	--borderRadius: 1rem;
-	--panelGridGap: 0.35rem;
+	--content-padding: 2rem;
+	--border-radius: 1rem;
+	--panel-grid-gap: 0.35rem;
+
+	/* Input */
+	--input-bg-color: color-mix(
+		in srgb,
+		var(--color-secondary) 10%,
+		transparent
+	);
+	--input-bg-color-hover: color-mix(
+		in srgb,
+		var(--color-secondary) 20%,
+		transparent
+	);
+	--input-bg-color-active: color-mix(
+		in srgb,
+		var(--color-secondary) 10%,
+		transparent
+	);
+	--input-padding-y: 0.75rem;
+	--input-padding-x: 1.25rem;
+	--input-scale-hover: 1.05;
+	--input-scale-active: 1;
+	--input-bg-filter: blur(0.5rem);
+	--input-transition: background-color 0.15s var(--easing-smooth),
+		scale 0.15s var(--easing-smooth), opacity 0.15s var(--easing-smooth);
+	--input-inner-gap: 0.5rem;
 }
 
 html {
@@ -31,7 +58,9 @@ body {
 	/* Theme transition */
 	background: var(--color-primary);
 	color: var(--color-secondary);
-	transition: background-color 0.25s var(--easeSmooth), color 0.25s var(--easeSmooth);
+	transition:
+		background-color 0.25s var(--easing-smooth),
+		color 0.25s var(--easing-smooth);
 }
 
 * {

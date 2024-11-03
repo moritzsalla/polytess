@@ -1,35 +1,25 @@
 .root {
-	padding: 0.75rem 1.25rem;
-	border-radius: 1rem;
-	background-color: color-mix(
-		in srgb,
-		var(--color-secondary) 10%,
-		transparent
-	);
+	padding: var(--input-padding-y) var(--input-padding-x);
+	border-radius: var(--border-radius);
+	background-color: var(--input-bg-color);
 	user-select: none;
 	color: var(--color-secondary);
-	backdrop-filter: blur(0.5rem);
+	backdrop-filter: var(--input-bg-filter);
 	display: inline-block;
 	text-align: center;
 	width: fit-content;
-	transition: background-color 0.15s var(--easeSmooth);
+	transition: var(--input-transition);
 	cursor: pointer;
 
-	&:hover {
-		background-color: color-mix(
-			in srgb,
-			var(--color-secondary) 20%,
-			transparent
-		);
-		scale: 1.05;
+	@media (hover: hover) and (pointer: fine) {
+		&:hover {
+			background-color: var(--input-bg-color-hover);
+			scale: var(--input-scale-hover);
+		}
 	}
 
 	&:active {
-		background-color: color-mix(
-			in srgb,
-			var(--color-secondary) 10%,
-			transparent
-		);
-		scale: 1;
+		background-color: var(--input-bg-color-active);
+		scale: var(--input-scale-active);
 	}
 }

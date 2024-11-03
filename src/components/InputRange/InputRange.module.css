@@ -1,16 +1,12 @@
 .wrapper {
-	padding: 0.75rem 1.25rem;
-	border-radius: 1rem;
-	background-color: color-mix(
-		in srgb,
-		var(--color-secondary) 10%,
-		transparent
-	);
+	padding: var(--input-padding-y) var(--input-padding-x);
+	border-radius: var(--border-radius);
+	background-color: var(--input-bg-color);
 	color: var(--color-secondary);
-	backdrop-filter: blur(0.5rem);
+	backdrop-filter: var(--input-bg-filter);
 	display: flex;
 	flex-direction: column;
-	gap: 0.5rem;
+	gap: var(--input-inner-gap);
 }
 
 .label {

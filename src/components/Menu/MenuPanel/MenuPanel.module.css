@@ -1,19 +1,19 @@
 .panel {
-   scroll-snap-align: center;
-   display: flex;
-   flex-direction: column;
-   gap: 1rem;
-   color: var(--color-secondary);
-   pointer-events: none;
+	scroll-snap-align: center;
+	display: flex;
+	flex-direction: column;
+	gap: 1rem;
+	color: var(--color-secondary);
+	pointer-events: none;
 }
 
 .grid {
-   display: flex;
-   flex-direction: column;
-   flex-wrap: wrap;
-   gap: var(--panelGridGap);
+	display: flex;
+	flex-direction: column;
+	flex-wrap: wrap;
+	gap: var(--panel-grid-gap);
 }
 
 .skeleton {
-   padding: 0.75rem 1.25rem;
+	padding: var(--input-padding-y) var(--input-padding-x);
 }
