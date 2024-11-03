@@ -1,5 +1,3 @@
-# Triangula
-
 Experiment in creating a tool for creating and manipulating Delaunay triangulations.
 
 ## Features
