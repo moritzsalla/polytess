@@ -1,6 +1,6 @@
 # Triangula
 
-An interactive web application for creating and manipulating Delaunay triangulations in real-time.
+Experiment in creating a tool for creating and manipulating Delaunay triangulations.
 
 ## Features
 
