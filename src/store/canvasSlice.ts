@@ -21,7 +21,7 @@ export type CanvasState = {
 const getInitialState = (): CanvasState => {
 	const mode = store.get<ModeKey>("mode") ?? "draw";
 	const view = store.get<View>("view") ?? "gradient";
-	const points = store.get<Points>("points") ?? [];
+	const points = store.get<Points>("points") ?? generateRandomPoints();
 	const maxEdgeLength = store.get<number>("max-edge-length") ?? 500;
 	// Default colors must be in hex format: #RRGGBB
 	const startColor = store.get<string>("gradient-color-start") ?? "#ff0000";
